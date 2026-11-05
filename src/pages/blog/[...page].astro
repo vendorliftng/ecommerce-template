@@ -1,0 +1,141 @@
+---
+import type { GetStaticPaths, Page } from 'astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import PostCard from '@/components/PostCard.astro';
+import type { Post } from '@/data/posts';
+import { getPublishedPosts, readingTime } from '@/lib/posts';
+import { formatDate } from '@/lib/format';
+import { breadcrumbSchema, type Crumb } from '@/lib/seo';
+import {  POSTS_PER_PAGE } from '@/lib/posts';
+
+export const getStaticPaths = (({ paginate }) => {
+    return paginate(getPublishedPosts(), { pageSize: POSTS_PER_PAGE });
+    
+}) satisfies GetStaticPaths;
+
+interface Props {
+  page: Page<Post>;
+}
+
+const { page } = Astro.props;
+const total = getPublishedPosts().length;
+
+const pageHref = (n: number) => (n === 1 ? '/blog/' : `/blog/${n}/`);
+const pageNumbers = Array.from({ length: page.lastPage }, (_, i) => i + 1);
+
+// Page 1: newest post is the big feature, then a row of 2, then a grid of 3
+const isFirstPage = page.currentPage === 1;
+const featured = isFirstPage ? page.data[0] : undefined;
+const rest = isFirstPage ? page.data.slice(1) : page.data;
+const pair = rest.slice(0, 2);
+const grid = rest.slice(2);
+
+const crumbs: Crumb[] = [{ label: 'Home', href: '/' }, { label: 'Blog' }];
+---
+
+<BaseLayout
+  title={isFirstPage ? 'Blog' : `Blog - Page ${page.currentPage}`}
+  description="Care guides, style tips and help choosing leather shoes and bags from VendorLift."
+  jsonLd={breadcrumbSchema(crumbs, Astro.site!)}
+>
+  <div class="bg-cream">
+    <!-- Header -->
+    <section class="mx-auto max-w-7xl px-4 pb-12 pt-6 sm:px-6 lg:px-8">
+      <Breadcrumbs items={crumbs} />
+
+      <div class="mt-12 grid items-end gap-8 lg:grid-cols-2 lg:gap-20">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-[0.25em] text-ink/60">
+            {total} {total === 1 ? 'story' : 'stories'} · Page {page.currentPage} of {page.lastPage}
+          </p>
+          <h1 class="mt-5  !text-5xl leading-[0.9] text-primary sm:text-8xl lg:text-9xl">
+            The <em class="italic">Blog</em>
+          </h1>
+        </div>
+        <p class="max-w-lg text-lg leading-relaxed text-ink/80 lg:justify-self-end">
+          Care guides, style tips and help choosing the right piece, so your leather lasts for years.
+        </p>
+      </div>
+    </section>
+
+    <div class="mx-auto max-w-7xl space-y-16 px-4 pb-20 sm:px-6 lg:px-8">
+      <!-- Featured latest story -->
+      {featured && (
+        <article class="group relative overflow-hidden">
+          <div class="aspect-[4/3] overflow-hidden sm:aspect-[16/9] lg:aspect-[21/9]">
+            <img
+              src={featured.featuredImageUrl}
+              alt={featured.featuredImageAlt}
+              width="1600"
+              height="700"
+              loading="eager"
+              fetchpriority="high"
+              class="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+            />
+          </div>
+
+          <div class="relative border-t-4 border-accent bg-white p-8 sm:p-10 lg:absolute lg:bottom-12 lg:left-12 lg:max-w-xl">
+            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-ink/60">
+              Latest story · {featured.publishedAt && formatDate(featured.publishedAt)} · {readingTime(featured)} min read
+            </p>
+            <h2 class="mt-4 font-display text-4xl leading-tight text-primary sm:text-5xl">
+              <a href={`/blog/${featured.slug}/`} class="after:absolute after:inset-0 focus-visible:outline-none">
+                {featured.title}
+              </a>
+            </h2>
+            <p class="mt-4 text-lg text-ink/80">{featured.excerpt}</p>
+            <span class="mt-6 inline-flex items-center gap-2 border-b border-ink pb-1 font-semibold text-ink" aria-hidden="true">
+              Read the story
+              <span class="transition-transform group-hover:translate-x-1">→</span>
+            </span>
+          </div>
+        </article>
+      )}
+
+      <!-- Row of 2 (wide + narrow) -->
+      {pair.length > 0 && (
+        <ul class="grid gap-12 lg:grid-cols-12 lg:gap-10">
+          {pair.map((post, i) => (
+            <li data-reveal class={i === 0 ? 'lg:col-span-7' : 'lg:col-span-5'}>
+              <PostCard post={post} size={i === 0 ? 'large' : 'default'} />
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <!-- Grid of 3 -->
+      {grid.length > 0 && (
+        <ul class="grid gap-12 md:grid-cols-2 lg:grid-cols-3 lg:gap-10">
+          {grid.map((post, i) => (
+            <li data-reveal style={`--reveal-delay: ${(i % 3) * 120}ms`}>
+              <PostCard post={post} />
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {page.data.length === 0 && (
+        <p class="py-16 text-center text-lg text-ink/70">New stories are on the way.</p>
+      )}
+
+      <!-- Pagination -->
+      {page.lastPage > 1 && (
+        <nav aria-label="Blog pages" class="flex items-center justify-center gap-2 pt-4">
+          {pageNumbers.map((n) => (
+            <a
+              href={pageHref(n)}
+              aria-current={n === page.currentPage ? 'page' : undefined}
+              class:list={[
+                'flex h-10 w-10 items-center justify-center text-sm font-semibold transition',
+                n === page.currentPage ? 'bg-primary text-white' : 'border border-ink/20 hover:border-primary hover:text-primary',
+              ]}
+            >
+              {n}
+            </a>
+          ))}
+        </nav>
+      )}
+    </div>
+  </div>
+</BaseLayout>

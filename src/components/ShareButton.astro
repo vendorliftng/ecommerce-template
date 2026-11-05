@@ -1,0 +1,52 @@
+---
+interface Props {
+  path: string;        // e.g. /products/lagos-classic-oxfords/
+  title: string;
+  text?: string;
+}
+
+const { path, title, text = '' } = Astro.props;
+const url = new URL(path, Astro.site).href;
+---
+
+<button
+  type="button"
+  data-share
+  data-share-url={url}
+  data-share-title={title}
+  data-share-text={text}
+  class="inline-flex items-center gap-2 text-sm font-medium text-ink/70 transition hover:text-primary"
+>
+  <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" />
+  </svg>
+  <span data-share-label>Share</span>
+</button>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-share]').forEach((button) => {
+    const label = button.querySelector<HTMLElement>('[data-share-label]');
+    const { shareUrl = '', shareTitle = '', shareText = '' } = button.dataset;
+
+    button.addEventListener('click', async () => {
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: shareTitle, text: shareText, url: shareUrl });
+        } catch {
+          // The visitor closed the share sheet: nothing to do
+        }
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        if (label) {
+          label.textContent = 'Link copied';
+          setTimeout(() => (label.textContent = 'Share'), 2000);
+        }
+      } catch {
+        window.prompt('Copy this link:', shareUrl);
+      }
+    });
+  });
+</script>

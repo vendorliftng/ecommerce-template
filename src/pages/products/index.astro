@@ -1,0 +1,63 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import ProductCard from '@/components/ProductCard.astro';
+import { getPublicProducts } from '@/lib/products';
+import { breadcrumbSchema, type Crumb } from '@/lib/seo';
+
+const products = getPublicProducts();
+const count = products.length;
+
+const crumbs: Crumb[] = [
+  { label: 'Home', href: '/' },
+  { label: 'Products' },
+];
+---
+
+<BaseLayout
+  title="Products"
+  description="Browse handcrafted leather shoes and bags from VendorLift. Open any piece for details or enquire on WhatsApp."
+  jsonLd={breadcrumbSchema(crumbs, Astro.site!)}
+>
+  <!-- Header -->
+  <section class="border-b border-ink/10 bg-cream">
+    <div class="mx-auto max-w-7xl px-4 pb-14 pt-6 sm:px-6 sm:pb-20 lg:px-8">
+      <Breadcrumbs items={crumbs} />
+
+      <div class="mt-12 grid items-end gap-8 lg:grid-cols-2 lg:gap-20">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-[0.25em] text-ink/60">
+            {count} {count === 1 ? 'piece' : 'pieces'} · Handcrafted leather
+          </p>
+          <h1 class="mt-5 !text-5xl font-semibold leading-[0.95] tracking-tight text-primary sm:text-7xl lg:text-8xl">
+            Our <em class="font-light italic">Products</em>
+          </h1>
+        </div>
+
+        <p class="max-w-lg text-lg leading-relaxed text-ink/80 lg:justify-self-end">
+          Shoes, bags and travel pieces in quality leather. Open any piece for full details, or enquire straight away on WhatsApp.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Grid -->
+  <section class="bg-cream">
+    <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+      {products.length > 0 ? (
+        <ul class="grid grid-cols-2 gap-x-4 gap-y-12 sm:gap-x-8 md:grid-cols-3 lg:grid-cols-4">
+          {products.map((product, i) => (
+            <li data-reveal style={`--reveal-delay: ${(i % 4) * 100}ms`}>
+              <ProductCard product={product} />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div class="rounded-2xl bg-white px-6 py-16 text-center">
+          <p class="text-lg font-medium text-ink">New products are on the way.</p>
+          <p class="mt-2 text-ink/70">Message us on WhatsApp to hear first when they arrive.</p>
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,154 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import ImageLightbox from '@/components/ImageLightbox.astro';
+import ShareButton from '@/components/ShareButton.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import ProductCard from '@/components/ProductCard.astro';
+import PostCard from '@/components/PostCard.astro';
+import type { Product } from '@/data/products';
+import { getPublicProducts } from '@/lib/products';
+import { getLatestPosts } from '@/lib/posts';
+import { formatPrice } from '@/lib/format';
+import { whatsappLink } from '@/lib/whatsapp';
+import { breadcrumbSchema, productSchema, type Crumb } from '@/lib/seo';
+
+// Build one page for every public product (drafts never get a page)
+export function getStaticPaths() {
+  return getPublicProducts().map((product) => ({
+    params: { slug: product.slug },
+    props: { product },
+  }));
+}
+
+interface Props {
+  product: Product;
+}
+
+const { product } = Astro.props;
+const siteUrl = Astro.site!;
+
+const path = `/products/${product.slug}/`;
+const price = formatPrice(product.price, product.currency);
+const isOutOfStock = product.status === 'out_of_stock';
+
+const ctaLabel = isOutOfStock ? 'Ask about restock on WhatsApp' : 'Enquire on WhatsApp';
+const enquiryMessage = isOutOfStock
+  ? `Hello VendorLift, is the ${product.title} coming back in stock?`
+  : `Hello VendorLift, I'm interested in the ${product.title} (${price}). Is it available?`;
+
+  
+const relatedProducts = getPublicProducts()
+  .filter((p) => p.slug !== product.slug && p.status === 'active')
+  .slice(0, 4);
+
+const relatedPosts = getLatestPosts(3);
+
+const crumbs: Crumb[] = [
+  { label: 'Home', href: '/' },
+  { label: 'Products', href: '/products/' },
+  { label: product.title },
+];
+---
+
+<BaseLayout
+  title={product.seoTitle ?? product.title}
+  description={product.seoDescription ?? product.shortDescription}
+  ogImage={product.featuredImageUrl}
+  ogImageAlt={product.featuredImageAlt}
+  jsonLd={[productSchema(product, siteUrl), breadcrumbSchema(crumbs, siteUrl)]}
+>
+  <!-- Product -->
+  <section class="mx-auto !max-w-7xl px-4 pb-16 pt-6 sm:px-6 sm:pb-24 lg:px-8">
+    <Breadcrumbs items={crumbs} />
+
+    <div class="mt-6 grid gap-10 lg:grid-cols-2 lg:gap-16">
+      <ImageLightbox
+        src={product.featuredImageUrl}
+        alt={product.featuredImageAlt}
+        priority
+      />
+
+      <div class="lg:sticky lg:top-24 lg:self-start">
+        <h1 class="text-3xl font-bold tracking-tight text-ink sm:text-4xl lg:text-5xl">
+          {product.title}
+        </h1>
+
+        <div class="mt-5 flex flex-wrap items-center gap-3">
+          <p class="text-2xl font-semibold text-ink sm:text-3xl">{price}</p>
+          <span
+            class:list={[
+              'rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wider',
+              isOutOfStock ? 'bg-ink text-white' : 'bg-primary/10 text-primary',
+            ]}
+          >
+            {isOutOfStock ? 'Out of stock' : 'In stock'}
+          </span>
+        </div>
+
+        <p class="mt-6 text-lg text-ink/80">{product.shortDescription}</p>
+
+        <a
+          href={whatsappLink(enquiryMessage)}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="mt-8 flex w-full items-center justify-center gap-2 rounded-full bg-primary px-8 py-4 text-lg font-semibold text-white transition hover:bg-accent hover:text-ink"
+        >
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+          </svg>
+          {ctaLabel}
+        </a>
+        <p class="mt-3 text-center text-sm text-ink/60">
+          Opens WhatsApp with this product's name and price already filled in.
+        </p>
+
+        <div class="mt-6 flex items-center justify-between border-y border-ink/10 py-4">
+          <ShareButton path={path} title={product.title} text={product.shortDescription} />
+          <a href="/contact/" class="text-sm font-medium text-ink/70 transition hover:text-primary">
+            Prefer a form? Contact us
+          </a>
+        </div>
+
+        {product.longDescription && (
+          <div class="mt-8">
+            <h2 class="text-lg font-semibold text-ink">Product details</h2>
+            <p class="mt-3 leading-relaxed text-ink/80">{product.longDescription}</p>
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <!-- Related products -->
+  {relatedProducts.length > 0 && (
+    <section aria-labelledby="related-heading" class="bg-cream py-16 sm:py-24">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <SectionHeading id="related-heading" eyebrow="More to love" title="You may also like" />
+        <ul class="mt-10 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 lg:grid-cols-4">
+          {relatedProducts.map((item, i) => (
+            <li data-reveal style={`--reveal-delay: ${i * 120}ms`}>
+              <ProductCard product={item} headingTag="h3" />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  <!-- Related posts (PRD 6.3: products link to related posts) -->
+  {relatedPosts.length > 0 && (
+    <section aria-labelledby="posts-heading" class="bg-white py-16 sm:py-24">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <SectionHeading id="posts-heading" eyebrow="From the blog" title="Guides and care tips" />
+        <ul class="mt-10 grid gap-x-6 gap-y-12 md:grid-cols-2 lg:grid-cols-3">
+          {relatedPosts.map((post, i) => (
+            <li data-reveal style={`--reveal-delay: ${i * 120}ms`}>
+              <PostCard post={post} headingTag="h3" />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+</BaseLayout>

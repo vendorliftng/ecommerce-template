@@ -1,0 +1,62 @@
+---
+import type { Product } from '@/data/products';
+import { formatPrice } from '@/lib/format';
+
+interface Props {
+  product: Product;
+  headingTag?: 'h2' | 'h3';
+}
+
+const { product, headingTag = 'h2' } = Astro.props;
+const Heading = headingTag;
+
+const href = `/products/${product.slug}/`;
+const price = formatPrice(product.price, product.currency);
+const isOutOfStock = product.status === 'out_of_stock';
+const ctaLabel = isOutOfStock ? 'View details' : 'Shop now';
+---
+
+<article class="group relative">
+  <!-- Image -->
+  <div class="relative aspect-[3/4] overflow-hidden rounded-2xl bg-cream">
+    <img
+      src={product.featuredImageUrl}
+      alt={product.featuredImageAlt}
+      width="900"
+      height="1200"
+      loading="lazy"
+      class="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+    />
+
+    {isOutOfStock && (
+      <span class="pointer-events-none absolute left-4 top-4 rounded-full bg-white px-3 py-1 text-sm font-medium text-ink shadow-sm">
+        Out of stock
+      </span>
+    )}
+
+    <!-- Hover button (always visible on phones). Clicks pass through to the card link. -->
+    <span
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-x-4 bottom-4 block rounded-full bg-white py-3 text-center text-sm font-semibold text-ink shadow-md transition duration-300 ease-out
+             group-hover:bg-primary group-hover:text-white
+             can-hover:translate-y-4 can-hover:opacity-0
+             can-hover:group-hover:translate-y-0 can-hover:group-hover:opacity-100
+             can-hover:group-focus-within:translate-y-0 can-hover:group-focus-within:opacity-100"
+    >
+      {ctaLabel}
+    </span>
+  </div>
+
+  <!-- Text -->
+  <div class="mt-4">
+    <Heading class="text-base font-medium text-ink sm:text-lg">
+      <a
+        href={href}
+        class="transition group-hover:text-primary focus-visible:outline-none after:absolute after:inset-0 after:rounded-2xl focus-visible:after:ring-2 focus-visible:after:ring-primary focus-visible:after:ring-offset-4"
+      >
+        {product.title}
+      </a>
+    </Heading>
+    <p class="mt-1 text-base text-ink sm:text-lg">{price}</p>
+  </div>
+</article>

@@ -1,0 +1,63 @@
+---
+import SectionHeading from '@/components/SectionHeading.astro';
+import type { Collection } from '@/data/collections';
+
+interface Props {
+  collections: Collection[];
+  eyebrow?: string;
+  title?: string;
+  text?: string;
+}
+
+const {
+  collections,
+  eyebrow = 'Shop by category',
+  title = 'Collections',
+  text,
+} = Astro.props;
+---
+
+{collections.length > 0 && (
+  <section aria-labelledby="collections-heading" class="bg-cream py-16 sm:py-24">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <SectionHeading id="collections-heading" eyebrow={eyebrow} title={title} text={text} align="left" />
+
+      <ul class="-mx-4 mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-6 sm:overflow-visible sm:px-0 sm:pb-0">
+        {collections.map((collection, i) => (
+          <li
+            data-reveal
+            style={`--reveal-delay: ${i * 120}ms`}
+            class="group w-[80%] shrink-0 snap-start rounded-2xl bg-white p-5 transition hover:shadow-lg sm:w-auto sm:p-6"
+          >
+            <a href={collection.href} class="block">
+              <div class="aspect-square overflow-hidden rounded-2xl bg-cream">
+                <img
+                  src={collection.imageUrl}
+                  alt={collection.imageAlt}
+                  width="900"
+                  height="900"
+                  loading="lazy"
+                  class="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                />
+              </div>
+
+              <div class="mt-4 flex items-center justify-between gap-4">
+                <div>
+                  <h3 class="text-xl font-semibold text-ink transition group-hover:text-primary">
+                    {collection.title}
+                  </h3>
+                  {collection.description && (
+                    <p class="mt-1 text-ink/60">{collection.description}</p>
+                  )}
+                </div>
+                <span class="shrink-0 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white transition group-hover:bg-accent group-hover:text-ink">
+                  View
+                </span>
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}

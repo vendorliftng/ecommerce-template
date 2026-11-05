@@ -1,0 +1,70 @@
+---
+interface Props {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  priority?: boolean;
+}
+
+const { src, alt, width = 900, height = 900, priority = false } = Astro.props;
+---
+
+<div data-lightbox class="group relative">
+  <button
+    type="button"
+    data-lightbox-open
+    aria-label={`Enlarge image: ${alt}`}
+    class="block w-full cursor-zoom-in overflow-hidden rounded-2xl bg-cream"
+  >
+    <img
+      src={src}
+      alt={alt}
+      width={width}
+      height={height}
+      loading={priority ? 'eager' : 'lazy'}
+      fetchpriority={priority ? 'high' : 'auto'}
+      class="aspect-square h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+    />
+    <span class="absolute bottom-4 right-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-ink shadow-md" aria-hidden="true">
+      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 8v6M8 11h6M19 11a8 8 0 11-16 0 8 8 0 0116 0z" />
+      </svg>
+    </span>
+  </button>
+
+  <dialog
+    data-lightbox-dialog
+    aria-label={alt}
+    class="m-auto max-h-[92vh] max-w-[92vw] overflow-visible bg-transparent p-0 backdrop:bg-black/85"
+  >
+    <img src={src} alt="" width={width} height={height} class="max-h-[92vh] max-w-[92vw] rounded-xl object-contain" />
+    <button
+      type="button"
+      data-lightbox-close
+      aria-label="Close image"
+      class="absolute -top-3 -right-3 flex h-10 w-10 items-center justify-center rounded-full bg-white text-ink shadow-lg transition hover:bg-accent sm:-top-4 sm:-right-4"
+    >
+      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+  </dialog>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-lightbox]').forEach((root) => {
+    const openBtn = root.querySelector<HTMLButtonElement>('[data-lightbox-open]');
+    const dialog = root.querySelector<HTMLDialogElement>('[data-lightbox-dialog]');
+    const closeBtn = root.querySelector<HTMLButtonElement>('[data-lightbox-close]');
+    if (!openBtn || !dialog) return;
+
+    openBtn.addEventListener('click', () => dialog.showModal());
+    closeBtn?.addEventListener('click', () => dialog.close());
+
+    // Close when clicking the dark area around the image
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+  });
+</script>

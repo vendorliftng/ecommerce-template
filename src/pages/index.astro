@@ -1,0 +1,51 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import HeroCarousel from '@/components/HeroCarousel.astro';
+import FeatureStrip from '@/components/FeatureStrip.astro';
+import CollectionGrid from '@/components/CollectionGrid.astro';
+import FeaturedProducts from '@/components/FeaturedProducts.astro';
+import FeaturedProduct from '@/components/FeaturedProduct.astro';
+import LatestPosts from '@/components/LatestPosts.astro';
+import AboutSection from '@/components/AboutSection.astro';
+import HowToOrder from '@/components/HowToOrder.astro';
+import { heroSlides } from '@/data/heroSlides';
+import { features } from '@/data/feature';
+import { collections } from '@/data/collections';
+import { orderSteps } from '@/data/orderSteps';
+import { site } from '@/data/site';
+import ContactCTA from '@/components/ContactCTA.astro';
+import footer from '@/components/Footer.astro';
+---
+
+<BaseLayout
+  title={`${site.name} - ${site.tagline}`}
+  description="Leather shoes and bags. Browse the collection and enquire easily on WhatsApp."
+  transparentHeader
+>
+  <HeroCarousel slides={heroSlides} />
+  <FeatureStrip items={features} />
+  <CollectionGrid collections={collections} />
+  
+  
+  <FeaturedProducts />
+  <!-- <FeaturedProduct slug="abuja-executive-weekender" /> -->
+  <!-- TODO: replace with the client's real story before launch -->
+  <AboutSection
+    eyebrow="The VendorLift workshop"
+    title="Made by hand, built to last"
+    text="Every pair of shoes and every bag is shaped, stitched and finished with care, so it looks good today and even better years from now."
+    steps={[
+      { title: 'Select', text: 'We choose leather for comfort, strength and how beautifully it ages.' },        // TODO: confirm
+      { title: 'Stitch', text: 'Seams are stitched with care so they hold up to everyday wear.' },              // TODO: confirm
+      { title: 'Finish', text: 'Edges are smoothed and each piece is checked before it reaches you.' },        // TODO: confirm
+    ]}
+    imageUrl="/images/craft.webp"
+    imageAlt="Hands stitching brown leather on a wooden workbench"
+    ctaLabel="Get in touch"
+    ctaHref="/contact/"
+  />
+  <HowToOrder steps={orderSteps} />
+  <LatestPosts />
+  <ContactCTA />
+  <footer />
+</BaseLayout>

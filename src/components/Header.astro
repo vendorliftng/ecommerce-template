@@ -1,0 +1,160 @@
+---
+import { site } from '@/data/site';
+import { navLinks } from '@/data/navigation';
+import { whatsappLink } from '@/lib/whatsapp';
+
+interface Props {
+  transparent?: boolean;
+}
+
+const { transparent = false } = Astro.props;
+const path = Astro.url.pathname;
+
+function isActive(href: string) {
+  return href === '/' ? path === '/' : path.startsWith(href);
+}
+---
+
+<header
+  data-header
+  data-transparent={transparent ? 'true' : undefined}
+  class:list={[
+    'top-0 z-50 w-full border-b transition-[background-color,border-color,box-shadow] duration-300',
+    transparent
+      ? 'fixed border-transparent bg-transparent'
+      : 'sticky border-gray-200 bg-white',
+  ]}
+>
+  <a
+    href="#main"
+    class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:text-white"
+  >
+    Skip to content
+  </a>
+
+  <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+       <a href="/" class="text-2xl font-extrabold uppercase tracking-tight text-primary transition hover:text-ink">
+      {site.name}
+    </a>
+
+    <nav aria-label="Main" class="hidden md:block">
+      <ul class="flex items-center gap-8">
+        {navLinks.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              aria-current={isActive(link.href) ? 'page' : undefined}
+              class:list={[
+                'relative py-1 text-sm font-medium transition hover:text-primary',
+                isActive(link.href)
+                  ? 'text-primary after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-full after:bg-accent'
+                  : 'text-ink/80',
+              ]}
+            >
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a
+        href={whatsappLink()}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="hidden rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white transition hover:bg-accent hover:text-ink md:inline-block"
+      >
+        Enquire
+      </a>
+
+      <button
+        data-menu-button
+        type="button"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label="Open menu"
+        class="rounded-lg p-2 text-ink transition hover:bg-cream md:hidden"
+      >
+        <svg data-icon-open class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+        <svg data-icon-close class="hidden h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <nav id="mobile-menu" aria-label="Mobile" class="hidden border-t border-gray-200 bg-white md:hidden">
+    <ul class="px-4 py-3 sm:px-6">
+      {navLinks.map((link) => (
+        <li>
+          <a
+            href={link.href}
+            aria-current={isActive(link.href) ? 'page' : undefined}
+            class:list={[
+              'block rounded-lg px-3 py-3 text-base font-medium',
+              isActive(link.href) ? 'bg-cream text-primary' : 'text-ink hover:bg-cream',
+            ]}
+          >
+            {link.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+    <div class="px-4 pb-5 sm:px-6">
+      <a
+        href={whatsappLink()}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="block rounded-full bg-primary px-5 py-3 text-center font-semibold text-white"
+      >
+        Chat on WhatsApp
+      </a>
+    </div>
+  </nav>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const button = document.querySelector<HTMLButtonElement>('[data-menu-button]');
+  const menu = document.getElementById('mobile-menu');
+
+  // ---------- Transparent → solid on scroll (homepage only) ----------
+  if (header?.dataset.transparent === 'true') {
+    const updateHeader = () => {
+      const scrolled = window.scrollY > 20;
+      header.classList.toggle('bg-white', scrolled);
+      header.classList.toggle('shadow-sm', scrolled);
+      header.classList.toggle('border-gray-200', scrolled);
+      header.classList.toggle('bg-transparent', !scrolled);
+      header.classList.toggle('border-transparent', !scrolled);
+    };
+
+    window.addEventListener('scroll', updateHeader, { passive: true });
+    updateHeader();
+  }
+
+  // ---------- Mobile menu ----------
+  if (button && menu) {
+    const iconOpen = button.querySelector('[data-icon-open]');
+    const iconClose = button.querySelector('[data-icon-close]');
+
+    const setOpen = (open: boolean) => {
+      button.setAttribute('aria-expanded', String(open));
+      button.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      menu.classList.toggle('hidden', !open);
+      iconOpen?.classList.toggle('hidden', open);
+      iconClose?.classList.toggle('hidden', !open);
+    };
+
+    button.addEventListener('click', () => {
+      setOpen(button.getAttribute('aria-expanded') !== 'true');
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') setOpen(false);
+    });
+  }
+</script>

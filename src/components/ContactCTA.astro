@@ -1,0 +1,51 @@
+---
+import { whatsappLink } from '@/lib/whatsapp';
+
+interface Props {
+  eyebrow?: string;
+  title?: string;
+  text?: string;
+}
+
+const {
+  eyebrow = 'Get in touch',
+  title = "Let's find the right piece for you",
+  text = 'Questions about sizes, colours or delivery? Message us and we will help you choose.',
+} = Astro.props;
+---
+
+<section aria-labelledby="cta-heading" class="bg-cream px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+  <div data-reveal class="relative mx-auto max-w-7xl overflow-hidden rounded-3xl bg-primary px-6 py-16 text-center text-white sm:px-12 sm:py-24">
+    <!-- Decorative gold rings -->
+    <span class="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full border-[40px] border-accent/10" aria-hidden="true"></span>
+    <span class="pointer-events-none absolute -bottom-24 -right-24 h-80 w-80 rounded-full border-[40px] border-accent/10" aria-hidden="true"></span>
+
+    <div class="relative mx-auto max-w-2xl">
+      <p class="flex items-center justify-center gap-3 text-sm font-semibold uppercase tracking-widest text-accent">
+        <span class="h-px w-8 bg-accent" aria-hidden="true"></span>
+        {eyebrow}
+        <span class="h-px w-8 bg-accent" aria-hidden="true"></span>
+      </p>
+
+      <h2 id="cta-heading" class="mt-5 !text-5xl font-bold tracking-tight sm:text-5xl">{title}</h2>
+      <p class="mt-5 text-lg text-white/80">{text}</p>
+
+      <div class="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
+        <a
+          href={whatsappLink('Hello VendorLift, I would like some help choosing a product.')}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="rounded-full bg-accent px-8 py-4 font-semibold text-ink transition hover:bg-white"
+        >
+          Chat on WhatsApp
+        </a>
+        <a
+          href="/contact/"
+          class="rounded-full border-2 border-white/40 px-8 py-4 font-semibold text-white transition hover:border-white hover:bg-white hover:text-primary"
+        >
+          Send a message
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

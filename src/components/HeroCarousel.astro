@@ -1,0 +1,242 @@
+---
+import type { HeroSlide } from '@/data/heroSlides';
+
+interface Props {
+  slides: HeroSlide[];
+  interval?: number;
+}
+
+const { slides, interval = 6000 } = Astro.props;
+
+function splitHeadline(headline: string, highlight?: string) {
+  if (!highlight || !headline.includes(highlight)) {
+    return { before: headline, match: '', after: '' };
+  }
+  const start = headline.indexOf(highlight);
+  return {
+    before: headline.slice(0, start),
+    match: highlight,
+    after: headline.slice(start + highlight.length),
+  };
+}
+
+const hasMultiple = slides.length > 1;
+---
+
+<section
+  data-carousel
+  data-interval={interval}
+  aria-roledescription="carousel"
+  aria-label="Featured collections"
+  class="relative h-svh min-h-[480px] w-full overflow-hidden bg-ink"
+  style="--progress: 0"
+>
+  {slides.map((slide, i) => {
+    const { before, match, after } = splitHeadline(slide.headline, slide.highlight);
+    const Heading = i === 0 ? 'h1' : 'h2';
+    const isFirst = i === 0;
+    const isExternal = slide.ctaHref.startsWith('http');
+
+    return (
+      <div
+        data-slide
+        role="group"
+        aria-roledescription="slide"
+        aria-label={`${i + 1} of ${slides.length}`}
+        aria-hidden={isFirst ? 'false' : 'true'}
+        inert={!isFirst}
+        class:list={[
+          'absolute inset-0 transition-opacity duration-700 motion-reduce:transition-none',
+          isFirst ? 'opacity-100' : 'opacity-0',
+        ]}
+      >
+        <img
+          src={slide.imageUrl}
+          alt={slide.imageAlt}
+          width="1920"
+          height="1080"
+          loading={isFirst ? 'eager' : 'lazy'}
+          fetchpriority={isFirst ? 'high' : 'auto'}
+          class="absolute inset-0 h-full w-full object-cover will-change-transform"
+          style="transform: translateY(calc(var(--progress) * 25%)) scale(calc(1.1 - var(--progress) * 0.1));"
+        />
+        <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent" aria-hidden="true"></div>
+
+        <div
+          class="relative mx-auto flex h-full max-w-7xl flex-col justify-center px-4 sm:px-6 lg:px-8"
+          style="opacity: calc(1 - var(--progress) * 1.6); transform: translateY(calc(var(--progress) * -60px));"
+        >
+          <div class="mt-6 max-w-3xl text-white">
+            {slide.badge && (
+              <span
+                data-hero-anim
+                style="--hero-delay: 0ms"
+                class="inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-1.5 text-sm font-medium backdrop-blur sm:text-base"
+              >
+                <span class="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden="true"></span>
+                {slide.badge}
+              </span>
+            )}
+
+            <Heading
+              data-hero-anim
+              style="--hero-delay: 120ms"
+              class="mt-6 text-4xl font-bold leading-[1.1] sm:text-6xl lg:text-7xl"
+            >
+              {before}
+              {match && (
+                <span class="relative inline-block">
+                  {match}
+                  <svg class="absolute -bottom-2 left-0 h-3 w-full text-accent sm:h-4" viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true">
+                    <path d="M2 9 C 50 2, 110 12, 198 4" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" />
+                  </svg>
+                </span>
+              )}
+              {after}
+            </Heading>
+
+            <p
+              data-hero-anim
+              style="--hero-delay: 240ms"
+              class="mt-6 max-w-lg text-lg text-white/90 sm:text-xl"
+            >
+              {slide.text}
+            </p>
+
+            <a
+              data-hero-anim
+              style="--hero-delay: 360ms"
+              href={slide.ctaHref}
+              {...(isExternal && { target: '_blank', rel: 'noopener noreferrer' })}
+              class="mt-10 inline-block rounded-full bg-white px-9 py-4 text-base font-semibold text-black transition hover:bg-accent hover:text-ink"
+            >
+              {slide.ctaLabel}
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  })}
+
+  {hasMultiple && (
+    <div class="absolute bottom-6 left-1/2 flex -translate-x-1/2 items-center gap-3 text-white">
+      <button data-prev type="button" aria-label="Previous slide" class="rounded-full p-2 transition hover:bg-white/20">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
+      </button>
+
+      <div class="flex items-center gap-1">
+        {slides.map((_, i) => (
+          <button
+            data-dot
+            type="button"
+            aria-label={`Go to slide ${i + 1}`}
+            aria-current={i === 0 ? 'true' : 'false'}
+            class="flex h-6 min-w-6 items-center justify-center"
+          >
+            <span
+              data-dot-bar
+              class:list={[
+                'block h-1.5 rounded-full transition-all duration-300',
+                i === 0 ? 'w-10 bg-white' : 'w-2 bg-white/50',
+              ]}
+            ></span>
+          </button>
+        ))}
+      </div>
+
+      <button data-next type="button" aria-label="Next slide" class="rounded-full p-2 transition hover:bg-white/20">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+      </button>
+    </div>
+  )}
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-carousel]').forEach((root) => {
+    const slides = Array.from(root.querySelectorAll<HTMLElement>('[data-slide]'));
+    const dots = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-dot]'));
+    const prevBtn = root.querySelector<HTMLButtonElement>('[data-prev]');
+    const nextBtn = root.querySelector<HTMLButtonElement>('[data-next]');
+    const interval = Number(root.dataset.interval) || 6000;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let current = 0;
+    let timer: number | undefined;
+
+    // ---------- Carousel ----------
+    function show(index: number) {
+      current = (index + slides.length) % slides.length;
+
+      slides.forEach((slide, i) => {
+        const active = i === current;
+        slide.classList.toggle('opacity-100', active);
+        slide.classList.toggle('opacity-0', !active);
+        slide.toggleAttribute('inert', !active);
+        slide.setAttribute('aria-hidden', String(!active));
+      });
+
+      dots.forEach((dot, i) => {
+        const active = i === current;
+        const bar = dot.querySelector<HTMLElement>('[data-dot-bar]');
+        dot.setAttribute('aria-current', String(active));
+        bar?.classList.toggle('w-10', active);
+        bar?.classList.toggle('bg-white', active);
+        bar?.classList.toggle('w-2', !active);
+        bar?.classList.toggle('bg-white/50', !active);
+      });
+    }
+
+    function stop() {
+      if (timer) window.clearInterval(timer);
+    }
+
+    function start() {
+      if (reduceMotion || slides.length < 2) return;
+      stop();
+      timer = window.setInterval(() => show(current + 1), interval);
+    }
+
+    prevBtn?.addEventListener('click', () => { show(current - 1); start(); });
+    nextBtn?.addEventListener('click', () => { show(current + 1); start(); });
+    dots.forEach((dot, i) => dot.addEventListener('click', () => { show(i); start(); }));
+
+    root.addEventListener('mouseenter', stop);
+    root.addEventListener('mouseleave', start);
+    root.addEventListener('focusin', stop);
+    root.addEventListener('focusout', start);
+
+    start();
+
+    // ---------- Replay the text animation whenever the hero comes back into view ----------
+    const inViewObserver = new IntersectionObserver(
+      ([entry]) => root.classList.toggle('is-inview', entry.isIntersecting),
+      { threshold: 0.35 }
+    );
+    inViewObserver.observe(root);
+
+    // ---------- Scroll effect: --progress goes from 0 (top) to 1 (scrolled past) ----------
+    if (!reduceMotion) {
+      let ticking = false;
+
+      const updateScroll = () => {
+        const rect = root.getBoundingClientRect();
+        const progress = Math.min(Math.max(-rect.top / rect.height, 0), 1);
+        root.style.setProperty('--progress', progress.toFixed(3));
+        ticking = false;
+      };
+
+      window.addEventListener(
+        'scroll',
+        () => {
+          if (!ticking) {
+            ticking = true;
+            requestAnimationFrame(updateScroll);
+          }
+        },
+        { passive: true }
+      );
+
+      updateScroll();
+    }
+  });
+</script>
