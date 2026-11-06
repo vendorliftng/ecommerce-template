@@ -6,8 +6,9 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://example.com',   // ← add (real domain later)
-  trailingSlash: 'always',       // ← add
+  site: 'https://github.io',   
+  base: 'ecommerce-template',
+  trailingSlash: 'always',       
   integrations: [react()],
 
   vite: {
