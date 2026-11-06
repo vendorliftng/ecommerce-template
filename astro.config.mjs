@@ -6,7 +6,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://github.io',   
+  site: 'https://vendorliftng.github.io',   
   base: 'ecommerce-template',
   trailingSlash: 'always',       
   integrations: [react()],
