@@ -1,0 +1,22 @@
+---
+import AdminApp from '@/admin/AdminApp';
+import '@/styles/global.css';
+
+export function getStaticPaths() {
+  const screens = [undefined, 'login', 'leads', 'products', 'products/new', 'products/edit', 'posts', 'posts/new', 'posts/edit'];
+  return screens.map((path) => ({ params: { path } }));
+}
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Admin - VendorLift</title>
+  </head>
+  <body class="bg-cream text-ink antialiased">
+    <AdminApp client:only="react" />
+  </body>
+</html>

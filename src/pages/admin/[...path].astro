@@ -1,0 +1,25 @@
+---
+import '@fontsource-variable/inter';
+import '@/styles/global.css';
+import AdminApp from '@/admin/AdminApp';
+
+// One copy of the dashboard page per screen, so every clean URL has a real file.
+// When you add a new dashboard screen, add its path here too.
+export function getStaticPaths() {
+  const screens = [undefined, 'login', 'leads', 'products', 'posts'];
+  return screens.map((path) => ({ params: { path } }));
+}
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Dashboard - VendorLift</title>
+  </head>
+  <body class="bg-cream text-ink antialiased">
+    <AdminApp client:only="react" />
+  </body>
+</html>
