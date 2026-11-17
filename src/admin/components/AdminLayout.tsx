@@ -3,6 +3,7 @@ import { NavLink, Outlet } from 'react-router-dom';
 import { useAuth } from '../auth';
 import { fetchLeads } from '../lib/leads';
 import { site } from '@/data/site';
+import { withBase } from '@/lib/url';
 
 const links = [
   { to: '/', label: 'Overview', end: true },
@@ -77,7 +78,7 @@ export default function AdminLayout() {
         {/* Bottom */}
         <div className="border-t border-white/15 px-4 py-4">
           <a
-            href="/"
+           href={withBase('/')}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 rounded-xl px-4 py-3 font-semibold text-white/75 transition hover:bg-white/5 hover:text-white"

@@ -2,6 +2,7 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import ProductCard from '@/components/ProductCard.astro';
 import { getFeaturedProducts } from '@/lib/products';
+import { withBase } from '@/lib/url';
 
 const suggestions = getFeaturedProducts(4);
 ---
@@ -15,8 +16,8 @@ const suggestions = getFeaturedProducts(4);
         The link may be old or mistyped. Try one of these instead.
       </p>
       <div class="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
-        <a href="/" class="rounded-full bg-primary px-8 py-3.5 font-semibold text-white transition hover:bg-accent hover:text-ink">Go to homepage</a>
-        <a href="/products/" class="rounded-full border-2 border-primary px-8 py-3.5 font-semibold text-primary transition hover:bg-primary hover:text-white">Browse products</a>
+        <a href={withBase('/')} class="rounded-full bg-primary px-8 py-3.5 font-semibold text-white transition hover:bg-accent hover:text-ink">Go to homepage</a>
+        <a href={withBase('/products/')} class="rounded-full border-2 border-primary px-8 py-3.5 font-semibold text-primary transition hover:bg-primary hover:text-white">Browse products</a>
       </div>
     </div>
   </section>

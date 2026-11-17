@@ -2,6 +2,7 @@
 import type { Post } from '@/data/posts';
 import { formatDate } from '@/lib/format';
 import { readingTime } from '@/lib/posts';
+import { withBase } from '@/lib/url';
 
 interface Props {
   post: Post;
@@ -16,7 +17,7 @@ const Heading = headingTag;
 <article class="group relative flex h-full flex-col">
   <div class="aspect-[4/3] overflow-hidden bg-cream">
     <img
-      src={post.featuredImageUrl}
+      src={withBase(post.featuredImageUrl)}
       alt={post.featuredImageAlt}
       width="800"
       height="600"
@@ -37,7 +38,7 @@ const Heading = headingTag;
         size === 'large' ? 'text-4xl sm:text-5xl' : 'text-3xl',
       ]}
     >
-      <a href={`/blog/${post.slug}/`} class="after:absolute after:inset-0 hover:underline focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-primary">
+      <a href={withBase(`/blog/${post.slug}/`)} class="after:absolute after:inset-0 hover:underline focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-primary">
         {post.title}
       </a>
     </Heading>

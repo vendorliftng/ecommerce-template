@@ -12,6 +12,7 @@ import { formatDate } from '@/lib/format';
 import { renderMarkdown } from '@/lib/markdown';
 import { whatsappLink } from '@/lib/whatsapp';
 import { blogPostingSchema, breadcrumbSchema, type Crumb } from '@/lib/seo';
+import { withBase } from '@/lib/url';
 
 // One page per published post (drafts and scheduled posts get no page)
 export function getStaticPaths() {
@@ -28,8 +29,14 @@ interface Props {
 const { post } = Astro.props;
 const siteUrl = Astro.site!;
 
-const path = `/blog/${post.slug}/`;
-const html = renderMarkdown(post.content);
+const path = withBase(`/blog/${post.slug}/`);
+
+// Turn Markdown into HTML, then add the sub-folder to any /images/... or /products/... inside the post
+const html = renderMarkdown(post.content).replace(
+  /(src|href)="(\/(?!\/)[^"]*)"/g,
+  (_match, attr, url) => `${attr}="${withBase(url)}"`,
+);
+
 const wordCount = post.content.split(/\s+/).length;
 const readMinutes = Math.max(1, Math.round(wordCount / 200));
 
@@ -39,8 +46,8 @@ const relatedPosts = getPublishedPosts()
 const relatedProducts = getFeaturedProducts(4);
 
 const crumbs: Crumb[] = [
-  { label: 'Home', href: '/' },
-  { label: 'Blog', href: '/blog/' },
+  { label: 'Home', href: withBase('/') },
+  { label: 'Blog', href: withBase('/blog/') },
   { label: post.title },
 ];
 ---
@@ -84,7 +91,19 @@ const crumbs: Crumb[] = [
     <!-- Featured image -->
     <div class="mx-auto mt-10 max-w-5xl px-4 sm:px-6">
       <div class="aspect-[16/9] overflow-hidden rounded-2xl bg-cream">
-            <!-- Gallery (optional, 2 or 3 images) -->
+        <img
+          src={withBase(post.featuredImageUrl)}
+          alt={post.featuredImageAlt}
+          width="1600"
+          height="900"
+          loading="eager"
+          fetchpriority="high"
+          class="h-full w-full object-cover"
+        />
+      </div>
+    </div>
+
+    <!-- Gallery (optional, 2 or 3 images) -->
     {post.gallery && post.gallery.length > 0 && (
       <div class="mx-auto mt-3 max-w-5xl px-4 sm:mt-4 sm:px-6">
         <ul class:list={['grid gap-3 sm:gap-4', post.gallery.length === 2 ? 'grid-cols-2' : 'grid-cols-3']}>
@@ -92,9 +111,9 @@ const crumbs: Crumb[] = [
             <li data-reveal style={`--reveal-delay: ${i * 120}ms`}>
               <figure class="group">
                 {img.href ? (
-                  <a href={img.href} class="block aspect-square overflow-hidden rounded-2xl bg-cream">
+                  <a href={withBase(img.href)} class="block aspect-square overflow-hidden rounded-2xl bg-cream">
                     <img
-                      src={img.url}
+                      src={withBase(img.url)}
                       alt={img.alt}
                       width="600"
                       height="600"
@@ -105,7 +124,7 @@ const crumbs: Crumb[] = [
                 ) : (
                   <div class="aspect-square overflow-hidden rounded-2xl bg-cream">
                     <img
-                      src={img.url}
+                      src={withBase(img.url)}
                       alt={img.alt}
                       width="600"
                       height="600"
@@ -117,7 +136,7 @@ const crumbs: Crumb[] = [
                 {img.caption && (
                   <figcaption class="mt-2 text-xs font-semibold uppercase tracking-[0.2em] text-ink/60 sm:text-sm">
                     {img.href ? (
-                      <a href={img.href} class="transition hover:text-primary">{img.caption} →</a>
+                      <a href={withBase(img.href)} class="transition hover:text-primary">{img.caption} →</a>
                     ) : (
                       img.caption
                     )}
@@ -129,8 +148,6 @@ const crumbs: Crumb[] = [
         </ul>
       </div>
     )}
-      </div>
-    </div>
 
     <!-- Content -->
     <div
@@ -146,7 +163,7 @@ const crumbs: Crumb[] = [
     <div class="mx-auto mt-12 max-w-[680px] px-4 sm:px-0">
       <div class="flex items-center justify-between border-y border-ink/10 py-4">
         <ShareButton path={path} title={post.title} text={post.excerpt} />
-        <a href="/blog/" class="text-sm font-semibold text-primary hover:underline">← Back to blog</a>
+        <a href={withBase('/blog/')} class="text-sm font-semibold text-primary hover:underline">← Back to blog</a>
       </div>
 
       <aside class="mt-10 rounded-2xl bg-cream p-6 sm:p-8">

@@ -4,12 +4,13 @@ import Breadcrumbs from '@/components/Breadcrumbs.astro';
 import ProductCard from '@/components/ProductCard.astro';
 import { getPublicProducts } from '@/lib/products';
 import { breadcrumbSchema, type Crumb } from '@/lib/seo';
+import { withBase } from '@/lib/url';
 
 const products = getPublicProducts();
 const count = products.length;
 
 const crumbs: Crumb[] = [
-  { label: 'Home', href: '/' },
+  { label: 'Home', href: withBase('/') },
   { label: 'Products' },
 ];
 ---

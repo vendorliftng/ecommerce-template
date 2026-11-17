@@ -1,6 +1,6 @@
 ---
 import { whatsappLink } from '@/lib/whatsapp';
-
+import { withBase } from '@/lib/url';
 interface Props {
   eyebrow?: string;
   title?: string;
@@ -40,7 +40,7 @@ const {
           Chat on WhatsApp
         </a>
         <a
-          href="/contact/"
+          href={withBase('/contact/')}
           class="rounded-full border-2 border-white/40 px-8 py-4 font-semibold text-white transition hover:border-white hover:bg-white hover:text-primary"
         >
           Send a message

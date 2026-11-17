@@ -1,6 +1,8 @@
 import type { APIRoute } from 'astro';
 import { getPublicProducts } from '@/lib/products';
 import { getPublishedPosts, POSTS_PER_PAGE } from '@/lib/posts';
+import { collections } from '@/data/collections';
+import { withBase } from '@/lib/url';
 
 interface Entry {
   path: string;
@@ -18,7 +20,8 @@ function escapeXml(value: string): string {
 }
 
 export const GET: APIRoute = ({ site }) => {
-  const abs = (path: string) => new URL(path, site).href;
+  // Full address with the sub-folder: "/products/" -> "https://vendorliftng.github.io/ecommerce-template/products/"
+  const abs = (path: string) => new URL(withBase(path), site).href;
 
   const products = getPublicProducts();
   const posts = getPublishedPosts();
@@ -27,8 +30,11 @@ export const GET: APIRoute = ({ site }) => {
   const entries: Entry[] = [
     { path: '/' },
     { path: '/products/' },
+    { path: '/collections/' },
     { path: '/blog/', lastmod: posts[0]?.updatedAt },
     { path: '/contact/' },
+    // One page per collection: /collections/shoes/, /collections/bags/ …
+    ...collections.map((c) => ({ path: c.href, images: [c.imageUrl] })),
     // Extra blog pages: /blog/2/, /blog/3/ …
     ...Array.from({ length: Math.max(0, blogPageCount - 1) }, (_, i) => ({ path: `/blog/${i + 2}/` })),
     // Every public product, with its image

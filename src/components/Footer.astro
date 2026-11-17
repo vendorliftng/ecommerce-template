@@ -2,7 +2,7 @@
 import { site } from '@/data/site';
 import { navLinks } from '@/data/navigation';
 import { whatsappLink } from '@/lib/whatsapp';
-
+import { withBase } from '@/lib/url';
 const year = new Date().getFullYear();
 ---
 
@@ -10,9 +10,9 @@ const year = new Date().getFullYear();
   <div class="mx-auto grid max-w-7xl gap-12 px-4 py-16 sm:grid-cols-2 sm:px-6 lg:grid-cols-4 lg:px-8">
     <!-- Brand -->
     <div class="sm:col-span-2">
-       <a href="/" class="text-2xl font-extrabold uppercase tracking-tight text-primary transition hover:text-ink">
-      {site.name}
-    </a>
+      <a href={withBase('/')} class="text-2xl font-extrabold uppercase tracking-tight text-white transition hover:text-accent">
+        {site.name}
+      </a>
       <p class="mt-5 max-w-sm leading-relaxed">
         {site.tagline} Browse the collection and message us on WhatsApp. We'll help you choose.
       </p>
@@ -31,7 +31,7 @@ const year = new Date().getFullYear();
       <h2 class="text-sm font-semibold uppercase tracking-widest text-accent">Explore</h2>
       <ul class="mt-5 space-y-3">
         {navLinks.map((link) => (
-          <li><a href={link.href} class="transition hover:text-accent">{link.label}</a></li>
+          <li><a href={withBase(link.href)} class="transition hover:text-accent">{link.label}</a></li>
         ))}
       </ul>
     </div>

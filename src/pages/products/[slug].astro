@@ -12,6 +12,7 @@ import { getLatestPosts } from '@/lib/posts';
 import { formatPrice } from '@/lib/format';
 import { whatsappLink } from '@/lib/whatsapp';
 import { breadcrumbSchema, productSchema, type Crumb } from '@/lib/seo';
+import { withBase } from '@/lib/url';
 
 // Build one page for every public product (drafts never get a page)
 export function getStaticPaths() {
@@ -28,7 +29,7 @@ interface Props {
 const { product } = Astro.props;
 const siteUrl = Astro.site!;
 
-const path = `/products/${product.slug}/`;
+const path = withBase(`/products/${product.slug}/`);
 const price = formatPrice(product.price, product.currency);
 const isOutOfStock = product.status === 'out_of_stock';
 
@@ -37,7 +38,6 @@ const enquiryMessage = isOutOfStock
   ? `Hello VendorLift, is the ${product.title} coming back in stock?`
   : `Hello VendorLift, I'm interested in the ${product.title} (${price}). Is it available?`;
 
-  
 const relatedProducts = getPublicProducts()
   .filter((p) => p.slug !== product.slug && p.status === 'active')
   .slice(0, 4);
@@ -45,8 +45,8 @@ const relatedProducts = getPublicProducts()
 const relatedPosts = getLatestPosts(3);
 
 const crumbs: Crumb[] = [
-  { label: 'Home', href: '/' },
-  { label: 'Products', href: '/products/' },
+  { label: 'Home', href: withBase('/') },
+  { label: 'Products', href: withBase('/products/') },
   { label: product.title },
 ];
 ---
@@ -59,12 +59,12 @@ const crumbs: Crumb[] = [
   jsonLd={[productSchema(product, siteUrl), breadcrumbSchema(crumbs, siteUrl)]}
 >
   <!-- Product -->
-  <section class="mx-auto !max-w-7xl px-4 pb-16 pt-6 sm:px-6 sm:pb-24 lg:px-8">
+  <section class="mx-auto max-w-7xl px-4 pb-16 pt-6 sm:px-6 sm:pb-24 lg:px-8">
     <Breadcrumbs items={crumbs} />
 
     <div class="mt-6 grid gap-10 lg:grid-cols-2 lg:gap-16">
       <ImageLightbox
-        src={product.featuredImageUrl}
+        src={withBase(product.featuredImageUrl)}
         alt={product.featuredImageAlt}
         priority
       />
@@ -105,7 +105,7 @@ const crumbs: Crumb[] = [
 
         <div class="mt-6 flex items-center justify-between border-y border-ink/10 py-4">
           <ShareButton path={path} title={product.title} text={product.shortDescription} />
-          <a href="/contact/" class="text-sm font-medium text-ink/70 transition hover:text-primary">
+          <a href={withBase('/contact/')} class="text-sm font-medium text-ink/70 transition hover:text-primary">
             Prefer a form? Contact us
           </a>
         </div>

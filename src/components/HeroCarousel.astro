@@ -1,5 +1,6 @@
 ---
 import type { HeroSlide } from '@/data/heroSlides';
+import { withBase } from '@/lib/url';
 
 interface Props {
   slides: HeroSlide[];
@@ -51,7 +52,7 @@ const hasMultiple = slides.length > 1;
         ]}
       >
         <img
-          src={slide.imageUrl}
+          src={withBase(slide.imageUrl)}
           alt={slide.imageAlt}
           width="1920"
           height="1080"
@@ -106,7 +107,7 @@ const hasMultiple = slides.length > 1;
             <a
               data-hero-anim
               style="--hero-delay: 360ms"
-              href={slide.ctaHref}
+              href={withBase(slide.ctaHref)}
               {...(isExternal && { target: '_blank', rel: 'noopener noreferrer' })}
               class="mt-10 inline-block rounded-full bg-white px-9 py-4 text-base font-semibold text-black transition hover:bg-accent hover:text-ink"
             >

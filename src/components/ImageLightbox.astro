@@ -1,4 +1,6 @@
 ---
+import { withBase } from '@/lib/url';
+
 interface Props {
   src: string;
   alt: string;
@@ -8,6 +10,7 @@ interface Props {
 }
 
 const { src, alt, width = 900, height = 900, priority = false } = Astro.props;
+const imageSrc = withBase(src);
 ---
 
 <div data-lightbox class="group relative">
@@ -18,7 +21,7 @@ const { src, alt, width = 900, height = 900, priority = false } = Astro.props;
     class="block w-full cursor-zoom-in overflow-hidden rounded-2xl bg-cream"
   >
     <img
-      src={src}
+      src={imageSrc}
       alt={alt}
       width={width}
       height={height}
@@ -38,7 +41,7 @@ const { src, alt, width = 900, height = 900, priority = false } = Astro.props;
     aria-label={alt}
     class="m-auto max-h-[92vh] max-w-[92vw] overflow-visible bg-transparent p-0 backdrop:bg-black/85"
   >
-    <img src={src} alt="" width={width} height={height} class="max-h-[92vh] max-w-[92vw] rounded-xl object-contain" />
+    <img src={imageSrc} alt="" width={width} height={height} class="max-h-[92vh] max-w-[92vw] rounded-xl object-contain" />
     <button
       type="button"
       data-lightbox-close

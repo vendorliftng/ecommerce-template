@@ -2,6 +2,7 @@
 import SectionHeading from '@/components/SectionHeading.astro';
 import ProductCard from '@/components/ProductCard.astro';
 import { getFeaturedProducts } from '@/lib/products';
+import { withBase } from '@/lib/url';
 
 interface Props {
   eyebrow?: string;
@@ -27,7 +28,7 @@ const items = getFeaturedProducts(limit);
         <SectionHeading id="featured-heading" eyebrow={eyebrow} title={title} text={text} />
 
         <a
-          href="/products/"
+          href={withBase('/products/')}
           data-reveal
           class="inline-flex shrink-0 self-start items-center gap-2 rounded-full bg-primary px-7 py-3 font-semibold text-white transition hover:bg-accent hover:text-ink sm:self-auto"
         >

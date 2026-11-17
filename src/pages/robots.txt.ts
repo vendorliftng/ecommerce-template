@@ -1,11 +1,13 @@
 import type { APIRoute } from 'astro';
+import { withBase } from '@/lib/url';
 
 export const GET: APIRoute = ({ site }) => {
-  const sitemapUrl = new URL('/sitemap.xml', site).href;
+  const sitemapUrl = new URL(withBase('/sitemap.xml'), site).href;
+  const adminPath = withBase('/admin/');
 
   const body = `User-agent: *
 Allow: /
-Disallow: /admin/
+Disallow: ${adminPath}
 
 Sitemap: ${sitemapUrl}
 `;

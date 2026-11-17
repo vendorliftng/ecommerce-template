@@ -1,11 +1,16 @@
 import type { Product } from '@/data/products';
 import type { Post } from '@/data/posts';
 import { site } from '@/data/site';
+import { withBase } from '@/lib/url';
 
 export interface Crumb {
   label: string;
   href?: string;
 }
+
+// Turns a path like "/products/tote/" into a full address with the sub-folder:
+// "https://vendorliftng.github.io/ecommerce-template/products/tote/"
+const fullUrl = (path: string, siteUrl: URL) => new URL(withBase(path), siteUrl).href;
 
 /** BreadcrumbList structured data (PRD 6.4) */
 export function breadcrumbSchema(items: Crumb[], siteUrl: URL) {
@@ -16,21 +21,21 @@ export function breadcrumbSchema(items: Crumb[], siteUrl: URL) {
       '@type': 'ListItem',
       position: i + 1,
       name: item.label,
-      ...(item.href && { item: new URL(item.href, siteUrl).href }),
+      ...(item.href && { item: fullUrl(item.href, siteUrl) }),
     })),
   };
 }
 
 /** Product structured data with an Offer (PRD 6.4) */
 export function productSchema(product: Product, siteUrl: URL) {
-  const url = new URL(`/products/${product.slug}/`, siteUrl).href;
+  const url = fullUrl(`/products/${product.slug}/`, siteUrl);
 
   return {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: product.title,
     description: product.seoDescription ?? product.shortDescription,
-    image: [new URL(product.featuredImageUrl, siteUrl).href],
+    image: [fullUrl(product.featuredImageUrl, siteUrl)],
     sku: product.slug,
     brand: { '@type': 'Brand', name: site.name },
     offers: {
@@ -49,7 +54,7 @@ export function productSchema(product: Product, siteUrl: URL) {
 
 /** BlogPosting structured data (PRD 6.4: headline, image, datePublished, dateModified, author) */
 export function blogPostingSchema(post: Post, siteUrl: URL) {
-  const url = new URL(`/blog/${post.slug}/`, siteUrl).href;
+  const url = fullUrl(`/blog/${post.slug}/`, siteUrl);
   const authorName = post.authorName ?? site.name;
 
   return {
@@ -57,7 +62,7 @@ export function blogPostingSchema(post: Post, siteUrl: URL) {
     '@type': 'BlogPosting',
     headline: post.title,
     description: post.seoDescription ?? post.excerpt,
-    image: [new URL(post.ogImageUrl ?? post.featuredImageUrl, siteUrl).href],
+    image: [fullUrl(post.ogImageUrl ?? post.featuredImageUrl, siteUrl)],
     datePublished: post.publishedAt,
     dateModified: post.updatedAt,
     author: {
@@ -67,7 +72,7 @@ export function blogPostingSchema(post: Post, siteUrl: URL) {
     publisher: {
       '@type': 'Organization',
       name: site.name,
-      logo: { '@type': 'ImageObject', url: new URL('/images/logo-square.png', siteUrl).href },
+      logo: { '@type': 'ImageObject', url: fullUrl('/images/logo-square.png', siteUrl) },
     },
     mainEntityOfPage: url,
   };

@@ -1,12 +1,12 @@
 ---
 import '@fontsource-variable/inter';
+import '@fontsource-variable/inter/wght-italic.css';
 import '@/styles/global.css';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import { site } from '@/data/site';
-import '@fontsource-variable/inter';
-import '@fontsource-variable/inter/wght-italic.css';
-import '@/styles/global.css';
+import { withBase } from '@/lib/url';
+
 type JsonLd = Record<string, unknown>;
 
 interface Props {
@@ -41,9 +41,10 @@ const {
 const fullTitle = title.includes(site.name) ? title : `${title} - ${site.name}`;
 
 // ---------- Absolute URLs (canonical, OG and JSON-LD need full URLs) ----------
-const canonicalUrl = new URL(canonical ?? Astro.url.pathname, Astro.site).href;
-const ogImageUrl = new URL(ogImage, Astro.site).href;
-const siteUrl = new URL('/', Astro.site).href;
+// withBase adds the sub-folder (/ecommerce-template) so the full addresses point to the right place
+const canonicalUrl = new URL(withBase(canonical ?? Astro.url.pathname), Astro.site).href;
+const ogImageUrl = new URL(withBase(ogImage), Astro.site).href;
+const siteUrl = new URL(withBase('/'), Astro.site).href;
 
 // ---------- Dev warnings for SEO limits ----------
 if (import.meta.env.DEV) {
@@ -64,7 +65,7 @@ const siteSchema = {
       '@id': `${siteUrl}#organization`,
       name: site.name,
       url: siteUrl,
-      logo: new URL('/images/logo-square.png', Astro.site).href,
+      logo: new URL(withBase('/images/logo-square.png'), Astro.site).href,
       email: site.email,
       contactPoint: {
         '@type': 'ContactPoint',
@@ -98,7 +99,7 @@ function toJsonLd(data: unknown) {
     <!-- Basics -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <script is:inline>document.documentElement.classList.add('js');</script>
+    <script is:inline>document.documentElement.classList.add('js');</script>
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
@@ -107,10 +108,10 @@ function toJsonLd(data: unknown) {
       : <meta name="robots" content="index, follow, max-image-preview:large" />}
 
     <!-- Icons & browser -->
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={withBase('/apple-touch-icon.png')} />
     <meta name="theme-color" content="#003399" />
-    <link rel="sitemap" href="/sitemap.xml" />
+    <link rel="sitemap" href={withBase('/sitemap.xml')} />
 
     <!-- Open Graph (Facebook, WhatsApp, LinkedIn previews) -->
     <meta property="og:type" content={ogType} />
@@ -150,7 +151,7 @@ function toJsonLd(data: unknown) {
       <slot />
     </main>
     <Footer />
-        <script>
+    <script>
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const revealItems = document.querySelectorAll<HTMLElement>('[data-reveal]');
 

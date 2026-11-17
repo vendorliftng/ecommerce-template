@@ -2,6 +2,7 @@
 import SectionHeading from '@/components/SectionHeading.astro';
 import PostCard from '@/components/PostCard.astro';
 import { getLatestPosts } from '@/lib/posts';
+import { withBase } from '@/lib/url';
 
 interface Props {
   eyebrow?: string;
@@ -27,7 +28,7 @@ const items = getLatestPosts(limit);
         <SectionHeading id="latest-posts-heading" eyebrow={eyebrow} title={title} text={text} />
 
         <a
-          href="/blog/"
+          href={withBase('/blog/')}
           data-reveal
           class="inline-flex shrink-0 self-start rounded-full bg-primary px-8 py-3 font-semibold text-white transition hover:bg-accent hover:text-ink sm:self-auto"
         >

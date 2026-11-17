@@ -1,6 +1,7 @@
 ---
 import AdminApp from '@/admin/AdminApp';
 import '@/styles/global.css';
+import { withBase } from '@/lib/url';
 
 export function getStaticPaths() {
   const screens = [undefined, 'login', 'leads', 'products', 'products/new', 'products/edit', 'posts', 'posts/new', 'posts/edit'];

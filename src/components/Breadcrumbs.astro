@@ -1,5 +1,6 @@
 ---
 import type { Crumb } from '@/lib/seo';
+import { withBase } from '@/lib/url';
 
 interface Props {
   items: Crumb[];
@@ -15,7 +16,7 @@ const { items } = Astro.props;
       return (
         <li class="flex items-center gap-2">
           {item.href && !isLast ? (
-            <a href={item.href} class="transition hover:text-primary">{item.label}</a>
+            <a href={withBase(item.href)} class="transition hover:text-primary">{item.label}</a>
           ) : (
             <span aria-current="page" class="text-ink">{item.label}</span>
           )}

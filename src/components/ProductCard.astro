@@ -1,6 +1,7 @@
 ---
 import type { Product } from '@/data/products';
 import { formatPrice } from '@/lib/format';
+import { withBase } from '@/lib/url';
 
 interface Props {
   product: Product;
@@ -10,7 +11,7 @@ interface Props {
 const { product, headingTag = 'h2' } = Astro.props;
 const Heading = headingTag;
 
-const href = `/products/${product.slug}/`;
+const href = withBase(`/products/${product.slug}/`);
 const price = formatPrice(product.price, product.currency);
 const isOutOfStock = product.status === 'out_of_stock';
 const ctaLabel = isOutOfStock ? 'View details' : 'Shop now';
@@ -20,7 +21,7 @@ const ctaLabel = isOutOfStock ? 'View details' : 'Shop now';
   <!-- Image -->
   <div class="relative aspect-[3/4] overflow-hidden rounded-2xl bg-cream">
     <img
-      src={product.featuredImageUrl}
+      src={withBase(product.featuredImageUrl)}
       alt={product.featuredImageAlt}
       width="900"
       height="1200"

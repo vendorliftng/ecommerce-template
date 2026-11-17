@@ -4,14 +4,13 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Breadcrumbs from '@/components/Breadcrumbs.astro';
 import PostCard from '@/components/PostCard.astro';
 import type { Post } from '@/data/posts';
-import { getPublishedPosts, readingTime } from '@/lib/posts';
+import { getPublishedPosts, readingTime, POSTS_PER_PAGE } from '@/lib/posts';
 import { formatDate } from '@/lib/format';
 import { breadcrumbSchema, type Crumb } from '@/lib/seo';
-import {  POSTS_PER_PAGE } from '@/lib/posts';
+import { withBase } from '@/lib/url';
 
 export const getStaticPaths = (({ paginate }) => {
-    return paginate(getPublishedPosts(), { pageSize: POSTS_PER_PAGE });
-    
+  return paginate(getPublishedPosts(), { pageSize: POSTS_PER_PAGE });
 }) satisfies GetStaticPaths;
 
 interface Props {
@@ -21,7 +20,7 @@ interface Props {
 const { page } = Astro.props;
 const total = getPublishedPosts().length;
 
-const pageHref = (n: number) => (n === 1 ? '/blog/' : `/blog/${n}/`);
+const pageHref = (n: number) => withBase(n === 1 ? '/blog/' : `/blog/${n}/`);
 const pageNumbers = Array.from({ length: page.lastPage }, (_, i) => i + 1);
 
 // Page 1: newest post is the big feature, then a row of 2, then a grid of 3
@@ -31,7 +30,7 @@ const rest = isFirstPage ? page.data.slice(1) : page.data;
 const pair = rest.slice(0, 2);
 const grid = rest.slice(2);
 
-const crumbs: Crumb[] = [{ label: 'Home', href: '/' }, { label: 'Blog' }];
+const crumbs: Crumb[] = [{ label: 'Home', href: withBase('/') }, { label: 'Blog' }];
 ---
 
 <BaseLayout
@@ -49,7 +48,7 @@ const crumbs: Crumb[] = [{ label: 'Home', href: '/' }, { label: 'Blog' }];
           <p class="text-xs font-semibold uppercase tracking-[0.25em] text-ink/60">
             {total} {total === 1 ? 'story' : 'stories'} · Page {page.currentPage} of {page.lastPage}
           </p>
-          <h1 class="mt-5  !text-5xl leading-[0.9] text-primary sm:text-8xl lg:text-9xl">
+          <h1 class="mt-5 !text-5xl leading-[0.9] text-primary sm:text-8xl lg:text-9xl">
             The <em class="italic">Blog</em>
           </h1>
         </div>
@@ -65,7 +64,7 @@ const crumbs: Crumb[] = [{ label: 'Home', href: '/' }, { label: 'Blog' }];
         <article class="group relative overflow-hidden">
           <div class="aspect-[4/3] overflow-hidden sm:aspect-[16/9] lg:aspect-[21/9]">
             <img
-              src={featured.featuredImageUrl}
+              src={withBase(featured.featuredImageUrl)}
               alt={featured.featuredImageAlt}
               width="1600"
               height="700"
@@ -80,7 +79,7 @@ const crumbs: Crumb[] = [{ label: 'Home', href: '/' }, { label: 'Blog' }];
               Latest story · {featured.publishedAt && formatDate(featured.publishedAt)} · {readingTime(featured)} min read
             </p>
             <h2 class="mt-4 font-display text-4xl leading-tight text-primary sm:text-5xl">
-              <a href={`/blog/${featured.slug}/`} class="after:absolute after:inset-0 focus-visible:outline-none">
+              <a href={withBase(`/blog/${featured.slug}/`)} class="after:absolute after:inset-0 focus-visible:outline-none">
                 {featured.title}
               </a>
             </h2>

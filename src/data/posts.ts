@@ -1,166 +1,224 @@
+// ---------- Images you actually have in public/images ----------
+// Keeping them in one place means a typo can only happen once.
+const IMG = {
+  weekender: '/images/brown-full-grain-leather-weekender-bag-on-the-right-of-a-warm-beige-studio-background.webp',
+  toteLoafers: '/images/tan-leather-tote-and-brown-loafers-arranged-on-the-right-against-a-warm-neutral-background.webp',
+  brown: '/images/brown.webp',
+  nude: '/images/nude.webp',
+  craft: '/images/craft.webp',
+  shoes: '/images/shoes.png',
+  shoes2: '/images/shoess.png',
+};
+
+export interface GalleryImage {
+  url: string;
+  alt: string;
+  caption?: string;
+  href?: string; // optional link, e.g. to a collection
+}
+
 export interface Post {
   slug: string;
   title: string;
+  excerpt: string;
+  content: string; // Markdown
   featuredImageUrl: string;
   featuredImageAlt: string;
-  gallery?: { url: string; alt: string; caption?: string; href?: string }[]; // not in PRD: needs a Firestore field
-  excerpt: string;
-  content: string;           // Markdown
+  ogImageUrl?: string;
+  gallery?: GalleryImage[]; // not in the PRD yet: tell the backend team
+  authorName?: string;
+  isPublished: boolean;
+  publishedAt: string | null; // ISO date; a future date = scheduled
+  updatedAt: string;
   seoTitle?: string;
   seoDescription?: string;
   canonicalUrl?: string;
-  ogImageUrl?: string;
-  authorName?: string;
-  isPublished: boolean;
-  publishedAt?: string;      // ISO date: the post goes live once this date has passed
-  createdAt: string;
-  updatedAt: string;
 }
 
-// TODO: blog images reuse product photos; replace with real blog images
 export const posts: Post[] = [
   {
     slug: 'how-to-care-for-leather-shoes',
-    title: 'How to Care for Leather Shoes',
-    featuredImageUrl: '/images/brown-leather-oxford-shoes.webp',
-    featuredImageAlt: 'Pair of dark brown leather oxford shoes',
+    title: 'How to Care for Your Leather Shoes',
+    excerpt: 'Simple habits that keep leather shoes looking good and lasting for years.',
+    featuredImageUrl: IMG.craft,
+    featuredImageAlt: 'Hands stitching brown leather on a wooden workbench',
     gallery: [
-      { url: '/images/brown-leather-oxford-shoes.webp', alt: 'Dark brown leather oxford shoes', caption: 'Oxfords', href: '/products/lagos-classic-oxfords/' },
-      { url: '/images/brown-suede-loafers.webp', alt: 'Brown suede penny loafers', caption: 'Loafers', href: '/products/kano-suede-loafers/' },
-      { url: '/images/enugu-chelsea-boots.webp', alt: 'Dark brown leather chelsea boots', caption: 'Chelsea boots', href: '/products/enugu-chelsea-boots/' },
+      { url: IMG.shoes, alt: 'Pair of leather shoes', caption: 'Shop shoes', href: '/collections/shoes/' },
+      { url: IMG.brown, alt: 'Brown leather product close-up' },
+      { url: IMG.shoes2, alt: 'Leather shoes from the side' },
     ],
-    excerpt: 'A simple 10-minute weekly routine to keep your shoes looking new.',
-    content: `## Clean them after wearing
-
-Wipe off dust with a soft, dry cloth before you put your shoes away. Dirt left on leather slowly dries it out.
-
-## Condition once a month
-
-Leather is skin, so it needs moisture. Rub a small amount of leather conditioner in with a cloth, then let it dry overnight.
-
-## Store them properly
-
-- Use shoe trees to keep their shape
-- Keep them out of direct sunlight
-- Give each pair a day of rest between wears
-
-Have a question about caring for your VendorLift shoes? [Send us a message](/contact/).`,
-    authorName: 'VendorLift',
     isPublished: true,
-    publishedAt: '2026-10-15T09:00:00Z',
-    createdAt: '2026-10-14T10:00:00Z',
-    updatedAt: '2026-10-15T09:00:00Z',
+    publishedAt: '2026-10-28T09:00:00.000Z',
+    updatedAt: '2026-10-28T09:00:00.000Z',
     seoTitle: 'How to Care for Leather Shoes',
-    seoDescription: 'A simple weekly routine to clean, condition and store leather shoes so they stay polished and comfortable for years.',
+    seoDescription: 'Easy leather shoe care: cleaning, conditioning, drying and storing, so your shoes stay smart for years.',
+    content: `Good leather shoes can last for years if you look after them. The good news is that it only takes a few minutes a week.
+
+## Clean them often
+
+Wipe off dust and dirt with a soft, dry cloth after wearing. For tougher marks, use a slightly damp cloth, then let the shoes dry naturally.
+
+## Condition the leather
+
+Leather can dry out, especially in hot weather. Apply a little leather conditioner every few weeks to keep it soft and stop it cracking.
+
+## Let them rest
+
+Try not to wear the same pair every day. A day of rest lets the leather dry out and keep its shape.
+
+## Store them well
+
+- Keep shoes in a cool, dry place, away from direct sun
+- Use shoe trees or stuff them with paper to hold their shape
+- Store them in a cloth bag, not plastic, so the leather can breathe
+
+Have a question about caring for a particular pair? Message us on WhatsApp and we'll be happy to help.`,
   },
   {
-    slug: 'choosing-a-leather-bag-for-work',
-    title: 'Choosing a Leather Bag for Work',
-    featuredImageUrl: '/images/tan-leather-tote-bag.webp',
-    featuredImageAlt: 'Tan leather tote bag',
+    slug: 'choosing-the-right-travel-bag',
+    title: 'Choosing the Right Travel Bag',
+    excerpt: 'Weekend trip or business travel? Here is how to pick a bag that fits the way you travel.',
+    featuredImageUrl: IMG.weekender,
+    featuredImageAlt: 'Brown leather weekender bag on a warm beige background',
     gallery: [
-      { url: '/images/tan-leather-tote-bag.webp', alt: 'Tan leather tote bag', caption: 'The tote', href: '/products/sokoto-heritage-tote/' },
-      { url: '/images/kaduna-leather-briefcase.webp', alt: 'Structured brown leather briefcase', caption: 'The briefcase', href: '/products/kaduna-leather-briefcase/' },
-      { url: '/images/brown-leather-weekender-bag.webp', alt: 'Brown leather weekender bag', caption: 'The weekender', href: '/products/abuja-executive-weekender/' },
+      { url: IMG.weekender, alt: 'Leather weekender bag', caption: 'Shop travel bags', href: '/collections/travel/' },
+      { url: IMG.toteLoafers, alt: 'Tan leather tote and brown loafers' },
     ],
-    excerpt: 'Tote, briefcase or crossbody? Pick the right bag for what you carry.',
-    content: `## Start with what you carry
-
-If you carry a laptop every day, choose a bag with a padded section. A structured briefcase protects it best; a large tote is more relaxed.
-
-## Think about how you travel
-
-- **Driving:** a briefcase or tote works well
-- **Public transport:** a crossbody keeps your hands free
-- **Lots of walking:** look for comfortable straps
-
-Not sure which suits you? [Ask us on WhatsApp](/contact/) and we will help you choose.`,
-    authorName: 'VendorLift',
     isPublished: true,
-    publishedAt: '2026-10-08T09:00:00Z',
-    createdAt: '2026-10-07T10:00:00Z',
-    updatedAt: '2026-10-08T09:00:00Z',
-    seoTitle: 'How to Choose a Leather Bag for Work',
-    seoDescription: 'Tote, briefcase or crossbody? A simple guide to picking the right leather work bag for what you carry every day.',
+    publishedAt: '2026-11-03T09:00:00.000Z',
+    updatedAt: '2026-11-03T09:00:00.000Z',
+    seoTitle: 'How to Choose a Leather Travel Bag',
+    seoDescription: 'Size, handles, pockets and style: a simple guide to choosing a leather travel bag that suits your trips.',
+    content: `The right travel bag makes every trip easier. Before you choose, think about how you usually travel.
+
+## Think about size
+
+For a weekend away, a medium weekender is usually enough. For longer trips, look for a bigger bag, or pair a weekender with a smaller tote.
+
+## Check the handles and strap
+
+Strong handles make the bag easy to carry. A shoulder strap is useful when your hands are full at the airport or the motor park.
+
+## Look at the pockets
+
+- An inside pocket keeps your phone, charger and documents safe
+- An outside pocket gives quick access to tickets and keys
+
+## Pick a style you'll keep using
+
+Simple colours like brown and tan go with almost everything, from work clothes to casual outfits.
+
+Not sure which size suits you? Send us a message on WhatsApp and tell us about your trips.`,
   },
   {
-    slug: 'oxfords-or-loafers',
-    title: 'Oxfords or Loafers?',
-    featuredImageUrl: '/images/brown-suede-loafers.webp',
-    featuredImageAlt: 'Pair of brown suede penny loafers',
+    slug: 'everyday-bag-styling-tips',
+    title: 'Everyday Bag Styling Tips',
+    excerpt: 'Easy ways to match your leather bag with your outfits, from the office to the weekend.',
+    featuredImageUrl: IMG.toteLoafers,
+    featuredImageAlt: 'Tan leather tote and brown loafers on a warm neutral background',
     gallery: [
-      { url: '/images/brown-leather-oxford-shoes.webp', alt: 'Dark brown leather oxford shoes', caption: 'Oxfords: formal', href: '/products/lagos-classic-oxfords/' },
-      { url: '/images/brown-suede-loafers.webp', alt: 'Brown suede penny loafers', caption: 'Loafers: relaxed', href: '/products/kano-suede-loafers/' },
+      { url: IMG.nude, alt: 'Nude leather product', caption: 'Shop bags', href: '/collections/bags/' },
+      { url: IMG.brown, alt: 'Brown leather product' },
+      { url: IMG.toteLoafers, alt: 'Tan leather tote with loafers' },
     ],
-    excerpt: 'Both are classics, but they suit different occasions.',
-    content: `## When to wear oxfords
-
-Oxfords are the more formal choice. Wear them with suits, to interviews, weddings and important meetings.
-
-## When to wear loafers
-
-Loafers are relaxed but still smart. They suit office days, church, dinners and weekends.
-
-## The simple rule
-
-If you are unsure, oxfords are never too formal. Loafers are best when comfort matters as much as style.`,
-    authorName: 'VendorLift',
     isPublished: true,
-    publishedAt: '2026-10-01T09:00:00Z',
-    createdAt: '2026-09-30T10:00:00Z',
-    updatedAt: '2026-10-01T09:00:00Z',
-    seoTitle: 'Oxfords or Loafers: Which Should You Wear?',
-    seoDescription: 'Oxfords or loafers? Learn which classic leather shoe suits each occasion, from interviews and weddings to relaxed weekends.',
+    publishedAt: '2026-11-07T09:00:00.000Z',
+    updatedAt: '2026-11-07T09:00:00.000Z',
+    seoTitle: 'Everyday Leather Bag Styling Tips',
+    seoDescription: 'How to match a leather bag with your shoes and outfits for work, events and the weekend.',
+    content: `A good leather bag can work with almost any outfit. Here are a few simple ideas.
+
+## Match your bag and shoes
+
+Pairing a tan bag with brown shoes looks put-together without trying too hard. You don't need an exact match, just colours from the same family.
+
+## Neutral colours go further
+
+Brown, tan and nude bags work with bright prints, plain colours and traditional outfits alike.
+
+## Pick the right size for the day
+
+- A tote fits a laptop and documents for work
+- A smaller bag is easier for events and outings
+- A weekender is best for short trips
+
+Want help choosing a bag to go with a particular outfit? Send us a picture on WhatsApp.`,
   },
   {
-    slug: 'find-your-shoe-size',
-    title: 'Find Your Shoe Size at Home',
-    featuredImageUrl: '/images/brown-leather-oxford-shoes.webp',
-    featuredImageAlt: 'Pair of dark brown leather oxford shoes',
+    slug: 'finding-your-shoe-size',
+    title: 'Finding Your Right Shoe Size',
+    excerpt: 'A few easy steps to get the right fit when you order shoes.',
+    featuredImageUrl: IMG.shoes,
+    featuredImageAlt: 'Pair of leather shoes',
     gallery: [
-      { url: '/images/brown-leather-oxford-shoes.webp', alt: 'Dark brown leather oxford shoes', caption: 'Oxfords', href: '/products/lagos-classic-oxfords/' },
-      { url: '/images/brown-suede-loafers.webp', alt: 'Brown suede penny loafers', caption: 'Loafers', href: '/products/kano-suede-loafers/' },
-      { url: '/images/enugu-chelsea-boots.webp', alt: 'Dark brown leather chelsea boots', caption: 'Chelsea boots', href: '/products/enugu-chelsea-boots/' },
+      { url: IMG.shoes2, alt: 'Leather shoes from the side', caption: 'Shop shoes', href: '/collections/shoes/' },
+      { url: IMG.brown, alt: 'Brown leather close-up' },
     ],
-    excerpt: 'Measure your feet in two minutes and order with confidence.',
-    content: `## What you need
+    isPublished: true,
+    publishedAt: '2026-11-10T09:00:00.000Z',
+    updatedAt: '2026-11-10T09:00:00.000Z',
+    seoTitle: 'How to Find Your Right Shoe Size',
+    seoDescription: 'Measure your feet at home and get the right fit when ordering leather shoes.',
+    content: `Getting the right size is the most important part of buying shoes. Here is a simple way to check.
 
-A sheet of paper, a pen and a ruler.
+## Measure your feet at home
 
-## How to measure
-
-1. Stand on the paper with your heel against a wall
+1. Stand on a sheet of paper with your heel against a wall
 2. Mark the tip of your longest toe
-3. Measure from the wall to the mark in centimetres
+3. Measure from the wall to the mark, in centimetres
 
-Send us your measurement on WhatsApp and we will tell you the right size.`,
-    authorName: 'VendorLift',
-    isPublished: true,
-    publishedAt: '2026-09-24T09:00:00Z',
-    createdAt: '2026-09-23T10:00:00Z',
-    updatedAt: '2026-09-24T09:00:00Z',
+## Measure in the evening
+
+Feet can be slightly bigger later in the day, so evening measurements give a more comfortable fit.
+
+## Between two sizes?
+
+Leather softens and shapes to your foot with wear. If you are unsure, tell us your measurement and we'll help you choose.
+
+Send us your foot length on WhatsApp and we'll recommend a size before you order.`,
   },
   {
-    slug: 'draft-post-example',
-    title: 'Draft: New Collection Preview',
-    featuredImageUrl: '/images/brown-leather-weekender-bag.webp',
-    featuredImageAlt: 'Brown leather weekender bag',
-    excerpt: 'Not ready yet.',
-    content: 'Coming soon.',
-    isPublished: false,
-    createdAt: '2026-10-18T10:00:00Z',
-    updatedAt: '2026-10-18T10:00:00Z',
+    slug: 'how-our-pieces-are-made',
+    title: 'How Our Pieces Are Made',
+    excerpt: 'A look at the care that goes into every pair of shoes and every bag.',
+    featuredImageUrl: IMG.craft,
+    featuredImageAlt: 'Hands stitching brown leather on a wooden workbench',
+    gallery: [
+      { url: IMG.brown, alt: 'Brown leather close-up' },
+      { url: IMG.nude, alt: 'Nude leather close-up' },
+      { url: IMG.weekender, alt: 'Finished leather weekender bag' },
+    ],
+    isPublished: true,
+    publishedAt: '2026-11-14T09:00:00.000Z',
+    updatedAt: '2026-11-14T09:00:00.000Z',
+    seoTitle: 'How Our Leather Pieces Are Made',
+    seoDescription: 'From choosing the leather to the final check: how each pair of shoes and each bag is made.',
+    // TODO: replace with the client's real process before launch
+    content: `Every piece goes through a few careful steps before it reaches you.
+
+## Choosing the leather
+
+We pick leather for comfort, strength and how it looks over time.
+
+## Cutting and stitching
+
+Each part is cut to shape, then stitched with care so the seams hold up to everyday use.
+
+## Finishing
+
+Edges are smoothed and every piece is checked before it is ready.
+
+Have a question about how a piece is made? Ask us on WhatsApp.`,
   },
   {
-    slug: 'scheduled-post-example',
-    title: 'Scheduled: Holiday Gift Guide',
-    featuredImageUrl: '/images/tan-leather-tote-bag.webp',
-    featuredImageAlt: 'Tan leather tote bag',
-    excerpt: 'Goes live in December.',
-    content: 'Coming soon.',
-    isPublished: true,
-    publishedAt: '2026-12-01T09:00:00Z',
-    createdAt: '2026-10-18T10:00:00Z',
-    updatedAt: '2026-10-18T10:00:00Z',
+    slug: 'gift-ideas-leather',
+    title: 'Leather Gift Ideas',
+    excerpt: 'Thoughtful leather gifts for birthdays, weddings and celebrations.',
+    featuredImageUrl: IMG.nude,
+    featuredImageAlt: 'Nude leather product on a neutral background',
+    isPublished: false, // draft: hidden from the website
+    publishedAt: null,
+    updatedAt: '2026-11-15T09:00:00.000Z',
+    content: `Draft: gift ideas post. Finish before publishing.`,
   },
 ];

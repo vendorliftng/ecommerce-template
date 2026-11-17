@@ -1,4 +1,6 @@
 ---
+import { withBase } from '@/lib/url';
+
 interface Props {
   path: string;        // e.g. /products/lagos-classic-oxfords/
   title: string;
@@ -6,7 +8,7 @@ interface Props {
 }
 
 const { path, title, text = '' } = Astro.props;
-const url = new URL(path, Astro.site).href;
+const url = new URL(withBase(path), Astro.site).href;
 ---
 
 <button

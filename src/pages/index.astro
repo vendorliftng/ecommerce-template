@@ -4,17 +4,16 @@ import HeroCarousel from '@/components/HeroCarousel.astro';
 import FeatureStrip from '@/components/FeatureStrip.astro';
 import CollectionGrid from '@/components/CollectionGrid.astro';
 import FeaturedProducts from '@/components/FeaturedProducts.astro';
-import FeaturedProduct from '@/components/FeaturedProduct.astro';
 import LatestPosts from '@/components/LatestPosts.astro';
 import AboutSection from '@/components/AboutSection.astro';
 import HowToOrder from '@/components/HowToOrder.astro';
+import ContactCTA from '@/components/ContactCTA.astro';
 import { heroSlides } from '@/data/heroSlides';
 import { features } from '@/data/feature';
 import { collections } from '@/data/collections';
 import { orderSteps } from '@/data/orderSteps';
 import { site } from '@/data/site';
-import ContactCTA from '@/components/ContactCTA.astro';
-import footer from '@/components/Footer.astro';
+import { withBase } from '@/lib/url';
 ---
 
 <BaseLayout
@@ -25,10 +24,8 @@ import footer from '@/components/Footer.astro';
   <HeroCarousel slides={heroSlides} />
   <FeatureStrip items={features} />
   <CollectionGrid collections={collections} />
-  
-  
   <FeaturedProducts />
-  <!-- <FeaturedProduct slug="abuja-executive-weekender" /> -->
+
   <!-- TODO: replace with the client's real story before launch -->
   <AboutSection
     eyebrow="The VendorLift workshop"
@@ -39,13 +36,12 @@ import footer from '@/components/Footer.astro';
       { title: 'Stitch', text: 'Seams are stitched with care so they hold up to everyday wear.' },              // TODO: confirm
       { title: 'Finish', text: 'Edges are smoothed and each piece is checked before it reaches you.' },        // TODO: confirm
     ]}
-    imageUrl="/images/craft.webp"
+    imageUrl={withBase('/images/craft.webp')}
     imageAlt="Hands stitching brown leather on a wooden workbench"
     ctaLabel="Get in touch"
-    ctaHref="/contact/"
+    ctaHref={withBase('/contact/')}
   />
   <HowToOrder steps={orderSteps} />
   <LatestPosts />
   <ContactCTA />
-  <footer />
 </BaseLayout>

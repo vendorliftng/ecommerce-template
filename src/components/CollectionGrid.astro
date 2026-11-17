@@ -1,6 +1,7 @@
 ---
 import SectionHeading from '@/components/SectionHeading.astro';
 import type { Collection } from '@/data/collections';
+import { withBase } from '@/lib/url';
 
 interface Props {
   collections: Collection[];
@@ -29,10 +30,10 @@ const {
             style={`--reveal-delay: ${i * 120}ms`}
             class="group w-[80%] shrink-0 snap-start rounded-2xl bg-white p-5 transition hover:shadow-lg sm:w-auto sm:p-6"
           >
-            <a href={collection.href} class="block">
+            <a href={withBase(collection.href)} class="block">
               <div class="aspect-square overflow-hidden rounded-2xl bg-cream">
                 <img
-                  src={collection.imageUrl}
+                  src={withBase(collection.imageUrl)}
                   alt={collection.imageAlt}
                   width="900"
                   height="900"

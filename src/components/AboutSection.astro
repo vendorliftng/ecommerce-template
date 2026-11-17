@@ -1,4 +1,6 @@
 ---
+import { withBase } from '@/lib/url';
+
 interface Step {
   title: string;
   text: string;
@@ -25,7 +27,7 @@ const { eyebrow, title, text, steps = [], imageUrl, imageAlt, ctaLabel, ctaHref 
     <div data-reveal class="relative mb-4 mr-4 sm:mb-6 sm:mr-6">
       <div class="absolute -bottom-4 -right-4 h-full w-full bg-accent/25 sm:-bottom-6 sm:-right-6" aria-hidden="true"></div>
       <img
-        src="/images/craft.webp"
+        src={withBase(imageUrl)}
         alt={imageAlt}
         width="1200"
         height="900"
@@ -65,7 +67,7 @@ const { eyebrow, title, text, steps = [], imageUrl, imageAlt, ctaLabel, ctaHref 
 
       {ctaLabel && ctaHref && (
         <a
-          href={ctaHref}
+          href={withBase(ctaHref)}
           class="mt-10 inline-flex items-center gap-3 border-2 border-primary px-8 py-4 text-sm font-bold uppercase tracking-[0.25em] text-primary transition hover:bg-primary hover:text-white"
         >
           {ctaLabel}
