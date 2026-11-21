@@ -8,6 +8,7 @@ import cloudflare from '@astrojs/cloudflare';
 export default defineConfig({
   site: 'https://ecommerce-template.vendorliftng.workers.dev',
   trailingSlash: 'ignore',
+  output: 'server',
   integrations: [react()],
 
   vite: {
