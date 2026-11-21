@@ -10,5 +10,12 @@
 	},
 	"observability": {
 		"enabled": true
-	}
+	},
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "vendorlift-ecommerce-db",
+			"database_id": "14cae5b9-1a09-4e56-89be-c31bd1742c50"
+		}
+	]
 }
