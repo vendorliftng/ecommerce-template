@@ -1,8 +1,10 @@
 export type ProductStatus = 'active' | 'out_of_stock' | 'draft';
+export type ProductCollection = 'shoes' | 'bags';
 
 export interface Product {
   slug: string;
   title: string;
+  collection: ProductCollection;
   featuredImageUrl: string;
   featuredImageAlt: string;
   shortDescription: string;
@@ -18,6 +20,7 @@ export const products: Product[] = [
   {
     slug: 'abuja-executive-weekender',
     title: 'Abuja Executive Weekender',
+    collection: 'bags',
     featuredImageUrl: '/images/brown-full-grain-leather-weekender-bag-on-the-right-of-a-warm-beige-studio-background.webp',
     featuredImageAlt: 'Brown full-grain leather weekender bag on a warm beige background',
     shortDescription: 'Full-grain leather travel bag for weekend trips and business travel.',
@@ -30,10 +33,11 @@ export const products: Product[] = [
     seoDescription:
       'Full-grain brown leather weekender bag with brass hardware and a shoulder strap. Enquire on WhatsApp.',
   },
-  
+
   {
     slug: 'lagos-classic-oxfords',
     title: 'Lagos Classic Oxfords',
+    collection: 'shoes',
     featuredImageUrl: '/images/shoes.png',
     featuredImageAlt: 'Pair of dark brown leather cap-toe oxford shoes',
     shortDescription: 'Polished cap-toe oxfords for the office and special occasions.',
@@ -49,6 +53,7 @@ export const products: Product[] = [
   {
     slug: 'sokoto-heritage-tote',
     title: 'Sokoto Heritage Tote',
+    collection: 'bags',
     featuredImageUrl: '/images/shoess.png',
     featuredImageAlt: 'Tan leather tote bag shown with brown leather loafers',
     shortDescription: 'An everyday tote in soft tan leather.',
@@ -64,6 +69,7 @@ export const products: Product[] = [
   {
     slug: 'kano-suede-loafers',
     title: 'Kano Suede Loafers',
+    collection: 'shoes',
     featuredImageUrl: '/images/tan-leather-tote-and-brown-loafers-arranged-on-the-right-against-a-warm-neutral-background.webp',
     featuredImageAlt: 'Pair of brown suede penny loafers',
     shortDescription: 'Soft suede loafers for relaxed, smart outfits.',
@@ -79,6 +85,7 @@ export const products: Product[] = [
   {
     slug: 'enugu-chelsea-boots',
     title: 'Enugu Chelsea Boots',
+    collection: 'shoes',
     featuredImageUrl: '/images/shoes.png', // TODO: add image
     featuredImageAlt: 'Dark brown leather chelsea boots with elastic side panels',
     shortDescription: 'Classic pull-on boots with a comfortable cushioned sole.',
@@ -94,6 +101,7 @@ export const products: Product[] = [
   {
     slug: 'kaduna-leather-briefcase',
     title: 'Kaduna Leather Briefcase',
+    collection: 'bags',
     featuredImageUrl: '/images/shoes.png', // TODO: add image
     featuredImageAlt: 'Structured brown leather briefcase with top handle',
     shortDescription: 'A structured briefcase for documents and a 15-inch laptop.',
@@ -109,7 +117,8 @@ export const products: Product[] = [
   {
     slug: 'ibadan-travel-backpack',
     title: 'Ibadan Travel Backpack',
-    featuredImageUrl: '/images/shoes.png', 
+    collection: 'bags',
+    featuredImageUrl: '/images/shoes.png',
     featuredImageAlt: 'Brown leather travel backpack with front pocket',
     shortDescription: 'Coming soon.',
     price: 150000,

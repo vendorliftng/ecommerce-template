@@ -38,9 +38,12 @@ const enquiryMessage = isOutOfStock
   ? `Hello VendorLift, is the ${product.title} coming back in stock?`
   : `Hello VendorLift, I'm interested in the ${product.title} (${price}). Is it available?`;
 
-const relatedProducts = getPublicProducts()
-  .filter((p) => p.slug !== product.slug && p.status === 'active')
-  .slice(0, 4);
+const allPublic = getPublicProducts().filter(
+  (p) => p.slug !== product.slug && p.status === 'active'
+);
+const sameCollection = allPublic.filter((p) => p.collection === product.collection);
+const otherCollection = allPublic.filter((p) => p.collection !== product.collection);
+const relatedProducts = [...sameCollection, ...otherCollection].slice(0, 4);
 
 const relatedPosts = getLatestPosts(3);
 
@@ -49,6 +52,8 @@ const crumbs: Crumb[] = [
   { label: 'Products', href: withBase('/products/') },
   { label: product.title },
 ];
+
+
 ---
 
 <BaseLayout

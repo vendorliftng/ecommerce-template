@@ -1,20 +1,20 @@
 ---
-import type { Product } from '@/data/products';
-import { formatPrice } from '@/lib/format';
-import { withBase } from '@/lib/url';
+import type { Product } from "@/data/products";
+import { formatPrice } from "@/lib/format";
+import { withBase } from "@/lib/url";
 
 interface Props {
   product: Product;
-  headingTag?: 'h2' | 'h3';
+  headingTag?: "h2" | "h3";
 }
 
-const { product, headingTag = 'h2' } = Astro.props;
+const { product, headingTag = "h2" } = Astro.props;
 const Heading = headingTag;
 
 const href = withBase(`/products/${product.slug}/`);
 const price = formatPrice(product.price, product.currency);
-const isOutOfStock = product.status === 'out_of_stock';
-const ctaLabel = isOutOfStock ? 'View details' : 'Shop now';
+const isOutOfStock = product.status === "out_of_stock";
+const ctaLabel = isOutOfStock ? "View details" : "Shop now";
 ---
 
 <article class="group relative">
