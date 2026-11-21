@@ -1,6 +1,8 @@
 import { useState, type FormEvent } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth';
+import { site } from '@/data/site';
+import { withBase } from '@/lib/url';
 
 export default function LoginPage() {
   const { user, signIn } = useAuth();
@@ -46,7 +48,15 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-svh items-center justify-center px-4 py-12">
       <div className="w-full max-w-sm">
-        <p className="text-center text-2xl font-extrabold uppercase tracking-tight text-primary">VendorLift</p>
+        <div className="flex justify-center">
+          <div className="inline-flex items-center rounded-xl bg-white px-4 py-2.5 shadow-sm">
+            <img
+              src={withBase(site.logo ?? '/logo.png')}
+              alt={site.logoAlt ?? `${site.name} logo`}
+              className="h-9 w-auto object-contain"
+            />
+          </div>
+        </div>
         <div className="mt-8 rounded-2xl border border-ink/10 bg-white p-8 shadow-sm">
           <h1 className="text-2xl font-bold text-ink">Sign in</h1>
           <p className="mt-1 text-sm text-ink/60">Owner dashboard</p>

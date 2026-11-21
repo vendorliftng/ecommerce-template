@@ -48,8 +48,14 @@ export default function AdminLayout() {
       >
         {/* Brand */}
         <div className="hidden px-6 pb-6 pt-8 lg:block">
-          <p className="text-2xl font-extrabold tracking-tight">{site.name}</p>
-          <p className="mt-1 text-xs font-bold uppercase tracking-[0.3em] text-accent">Admin</p>
+          <div className="inline-flex items-center rounded-xl bg-white px-3 py-2 shadow-sm">
+            <img
+              src={withBase(site.logo)}
+              alt={site.logoAlt ?? `${site.name} logo`}
+              className="h-8 w-auto object-contain"
+            />
+          </div>
+          <p className="mt-2.5 text-xs font-bold uppercase tracking-[0.3em] text-accent">Admin</p>
         </div>
 
         {/* Navigation */}
