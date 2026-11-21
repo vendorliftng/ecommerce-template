@@ -36,8 +36,7 @@ export default function AdminLayout() {
   }
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
-    `group flex items-center gap-3 rounded-xl px-4 py-3 font-semibold transition ${
-      isActive ? 'bg-white/10 text-white' : 'text-white/75 hover:bg-white/5 hover:text-white'
+    `group flex items-center gap-3 rounded-xl px-4 py-3 font-semibold transition ${isActive ? 'bg-white/10 text-white' : 'text-white/75 hover:bg-white/5 hover:text-white'
     }`;
 
   return (
@@ -84,7 +83,7 @@ export default function AdminLayout() {
         {/* Bottom */}
         <div className="border-t border-white/15 px-4 py-4">
           <a
-           href={withBase('/')}
+            href={withBase('/')}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 rounded-xl px-4 py-3 font-semibold text-white/75 transition hover:bg-white/5 hover:text-white"

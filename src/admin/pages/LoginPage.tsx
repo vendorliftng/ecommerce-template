@@ -51,7 +51,7 @@ export default function LoginPage() {
         <div className="flex justify-center">
           <div className="inline-flex items-center rounded-xl bg-white px-4 py-2.5 shadow-sm">
             <img
-              src={withBase(site.logo ?? '/logo.png')}
+              src={withBase(site.logo ?? '/Logo.png')}
               alt={site.logoAlt ?? `${site.name} logo`}
               className="h-9 w-auto object-contain"
             />
