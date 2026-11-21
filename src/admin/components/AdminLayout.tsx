@@ -116,7 +116,13 @@ export default function AdminLayout() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
-            <p className="font-extrabold text-primary lg:hidden">{site.name}</p>
+            <a href={withBase('/admin')} className="inline-flex items-center lg:hidden">
+              <img
+                src={withBase(site.logo ?? '/logo.png')}
+                alt={site.logoAlt ?? `${site.name} logo`}
+                className="h-7 w-auto object-contain"
+              />
+            </a>
             <p className="hidden text-sm text-ink/50 lg:block">
               {lastPublished ? `Last published at ${lastPublished.toLocaleTimeString()}` : 'Saved changes go live when you publish'}
             </p>
